@@ -66,8 +66,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private boolean isBypassToken(@NonNull HttpServletRequest request){
         final List<Pair<String, String>> bypassTokes = Arrays.asList(
-                Pair.of(String.format("%s/users/login", apiPrefix), "POST")
-        );
+                Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
+                Pair.of(String.format("%s/categories/getAll", apiPrefix), "GET"),
+                Pair.of(String.format("%s/categories", apiPrefix), "GET")
+                );
         for(Pair<String, String> bypassToken: bypassTokes){
             if(request.getServletPath().contains(bypassToken.getFirst()) &&
                     request.getMethod().equals(bypassToken.getSecond())){
