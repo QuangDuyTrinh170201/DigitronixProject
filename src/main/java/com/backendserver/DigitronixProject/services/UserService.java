@@ -2,12 +2,14 @@ package com.backendserver.DigitronixProject.services;
 
 import com.backendserver.DigitronixProject.components.JwtTokenUtil;
 import com.backendserver.DigitronixProject.configurations.SecurityConfig;
+import com.backendserver.DigitronixProject.dtos.UpdateUserDTO;
 import com.backendserver.DigitronixProject.dtos.UserDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Role;
 import com.backendserver.DigitronixProject.models.User;
 import com.backendserver.DigitronixProject.repositories.RoleRepository;
 import com.backendserver.DigitronixProject.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -66,5 +69,45 @@ public class UserService implements IUserService{
         //authenticate with java spring security
         authenticationManager.authenticate(authenticationToken);
         return jwtTokenUtil.generateToken(existingUser);
+    }
+
+    @Override
+    public List<User> getAllUsers() throws Exception {
+        try {
+            List<User> users = userRepository.findAll();
+            if (users.isEmpty()) {
+                throw new DataNotFoundException("No users found");
+            }
+            return users;
+        } catch (Exception e) {
+            throw new Exception("Failed to retrieve users: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    @Override
+    public User updateUserInforByAdmin(Long userId, UpdateUserDTO updatedUserDTO) throws Exception {
+        // Tìm người dùng hiện có dựa vào userId
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        // Cập nhật trường isActive nếu có
+        Boolean isActive = updatedUserDTO.getIsActive();
+        if (isActive != null) {
+            existingUser.setActive(isActive);
+        }
+
+        // Cập nhật trường roleId nếu có
+        Long roleId = updatedUserDTO.getRoleId();
+        if (roleId != null) {
+            // Truy vấn cơ sở dữ liệu để lấy đối tượng Role tương ứng với roleId
+            Role role = roleRepository.findById(roleId)
+                    .orElseThrow(() -> new DataNotFoundException("Role not found"));
+
+            // Gán đối tượng Role vào trường role của User
+            existingUser.setRole(role);
+        }
+
+        return userRepository.save(existingUser);
     }
 }

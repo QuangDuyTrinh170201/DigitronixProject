@@ -7,6 +7,7 @@ import com.backendserver.DigitronixProject.services.IUserService;
 import com.backendserver.DigitronixProject.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -53,5 +54,27 @@ public class UserController {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_DIRECTOR')")
+    public ResponseEntity<List<User>> getAllUsers() {
+        try {
+            List<User> users = userService.getAllUsers();
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PutMapping("/update/{userId}")
+    @PreAuthorize("hasRole('ROLE_DIRECTOR')")
+    public ResponseEntity<?> updateUserByAdmin(@PathVariable Long userId, @RequestBody UpdateUserDTO updatedUserDTO) {
+        try {
+            User updatedUser = userService.updateUserInforByAdmin(userId, updatedUserDTO);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating user information: " + e.getMessage());
+        }
     }
 }
