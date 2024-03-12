@@ -6,10 +6,11 @@ import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.User;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IUserService {
     User CreateUser(UserDTO userDTO) throws DataNotFoundException;
-    String Login(String username, String password) throws DataNotFoundException;
+    Map<String, Object> Login(String username, String password) throws DataNotFoundException;
 
     public List<User> getAllUsers() throws Exception;
 

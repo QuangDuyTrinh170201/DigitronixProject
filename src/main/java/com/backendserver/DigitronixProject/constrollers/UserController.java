@@ -15,6 +15,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -45,16 +46,27 @@ public class UserController {
         }
     }
 
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO){
+//        try {
+//            String token = userService.Login(userLoginDTO.getUserName(), userLoginDTO.getPassword());
+//            return ResponseEntity.ok(token);
+//        } catch (DataNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//    }
+
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO){
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
         try {
-            String token = userService.Login(userLoginDTO.getUserName(), userLoginDTO.getPassword());
-            return ResponseEntity.ok(token);
+            Map<String, Object> response = userService.Login(userLoginDTO.getUserName(), userLoginDTO.getPassword());
+            return ResponseEntity.ok(response);
         } catch (DataNotFoundException e) {
             throw new RuntimeException(e);
         }
-
     }
+
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_DIRECTOR')")

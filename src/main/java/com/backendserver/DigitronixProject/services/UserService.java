@@ -18,7 +18,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -51,8 +53,28 @@ public class UserService implements IUserService{
         return userRepository.save(newUser);
     }
 
+//    @Override
+//    public String Login(String username, String password) throws DataNotFoundException {
+//        Optional<User> optionalUser = userRepository.findByUsername(username);
+//        if(optionalUser.isEmpty()){
+//            throw new DataNotFoundException("Username or password is invalid");
+//        }
+//        User existingUser = optionalUser.get();
+//        //check password
+//        if(!passwordEncoder.matches(password, existingUser.getPassword())){
+//            throw new BadCredentialsException("Wrong username or password!");
+//        }
+//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+//                username, password,
+//                existingUser.getAuthorities()
+//        );
+//        //authenticate with java spring security
+//        authenticationManager.authenticate(authenticationToken);
+//        return jwtTokenUtil.generateToken(existingUser);
+//    }
+
     @Override
-    public String Login(String username, String password) throws DataNotFoundException {
+    public Map<String, Object> Login(String username, String password) throws DataNotFoundException {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if(optionalUser.isEmpty()){
             throw new DataNotFoundException("Username or password is invalid");
@@ -68,8 +90,16 @@ public class UserService implements IUserService{
         );
         //authenticate with java spring security
         authenticationManager.authenticate(authenticationToken);
-        return jwtTokenUtil.generateToken(existingUser);
+
+        // Prepare the response map
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", jwtTokenUtil.generateToken(existingUser));
+        response.put("roleId", existingUser.getRole().getId()); // Assuming Role is a field in User entity
+
+        return response;
     }
+
+
 
     @Override
     public List<User> getAllUsers() throws Exception {
