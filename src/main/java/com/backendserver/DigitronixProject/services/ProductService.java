@@ -33,15 +33,16 @@ public class ProductService implements IProductService{
                 .orElseThrow(() -> new DataNotFoundException("Không thể tìm thấy danh mục sản phẩm với id: " + productDTO.getCategoryId()));
 
         // Kiểm tra xem có sản phẩm nào trùng tên không
-        Optional<Product> existingProduct = productRepository.findByProductName(productDTO.getProductName());
-        if(existingProduct.isPresent()) {
-            throw new RuntimeException("Một sản phẩm cùng tên đã tồn tại.");
-        }
+//        Optional<Product> existingProduct = productRepository.findByProductName(productDTO.getProductName());
+//        if(existingProduct.isPresent()) {
+//            throw new RuntimeException("Một sản phẩm cùng tên đã tồn tại.");
+//        }
 
         // Tạo sản phẩm mới
         Product newProduct = new Product();
         newProduct.setProductName(productDTO.getProductName());
         newProduct.setPrice(productDTO.getPrice());
+        newProduct.setQuantity(productDTO.getQuantity());
         newProduct.setCategory(existingCategory);
 
         // Lưu sản phẩm mới vào cơ sở dữ liệu
@@ -88,6 +89,32 @@ public class ProductService implements IProductService{
 
         // Lưu sản phẩm và trả về
         return productRepository.save(product);
+    }
+
+    @Override
+    public String deleteProduct(Long productId) throws DataNotFoundException {
+        Optional<Product> findProduct = productRepository.findById(productId);
+        if(findProduct.isEmpty()){
+            throw new DataNotFoundException("Cannot find this product!");
+        }
+        productRepository.deleteById(productId);
+        return "Delete Successfully";
+    }
+
+    public Product updateProduct(Long id, ProductDTO productDTO) throws DataNotFoundException{
+        Product existingProduct = productRepository.getById(id);
+
+        Category existingCategory = categoryRepository
+                .findById(productDTO.getCategoryId())
+                .orElseThrow(() -> new DataNotFoundException("Cannot find the category of this product with id " +productDTO.getCategoryId()));
+
+        String oldImage = existingProduct.getImg();
+        existingProduct.setProductName(productDTO.getProductName());
+        existingProduct.setPrice(productDTO.getPrice());
+        existingProduct.setCategory(existingCategory);
+        existingProduct.setImg(oldImage);
+        existingProduct.setQuantity(productDTO.getQuantity());
+        return productRepository.save(existingProduct);
     }
 
 }

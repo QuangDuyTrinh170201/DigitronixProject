@@ -27,6 +27,9 @@ public class ProductDTO {
     @JsonProperty("img_url")
     private String img;
 
+    @NotNull(message = "Quantity is required")
+    private int quantity;
+
     @JsonProperty("created_at")
     private Date createdAt;
 

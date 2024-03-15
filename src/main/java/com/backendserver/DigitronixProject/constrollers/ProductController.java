@@ -42,7 +42,7 @@ public class ProductController {
         try {
             Product newProduct = productService.createProductInfo(productDTO);
             return ResponseEntity.ok().body(newProduct);
-        } catch (DataNotFoundException | InvalidParameterException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -107,5 +107,28 @@ public class ProductController {
         Product updatedProduct = productService.addTagToProduct(productId, tagId);
         return ResponseEntity.ok().body("Add Tag Successfully");
     }
+
+    @DeleteMapping("/{productId}")
+    @PreAuthorize("hasRole('ROLE_DIRECTOR')")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long productId) {
+        try{
+            String message = productService.deleteProduct(productId);
+            return ResponseEntity.ok(message);
+        }catch (DataNotFoundException ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_DIRECTOR')")
+    public ResponseEntity<?> updateProduct(@PathVariable long id, @RequestBody ProductDTO productDTO){
+        try{
+            Product updatedProduct = productService.updateProduct(id, productDTO);
+            return ResponseEntity.ok(updatedProduct);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 }
 

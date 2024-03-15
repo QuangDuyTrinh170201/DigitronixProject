@@ -32,6 +32,9 @@ public class Product extends BaseEntity{
     @Column(name = "img_url", nullable = false)
     private String img;
 
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
+
     @ManyToMany
     @JoinTable(
             name = "product_tags_mapping",

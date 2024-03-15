@@ -1,17 +1,18 @@
 package com.backendserver.DigitronixProject.services;
 
 import com.backendserver.DigitronixProject.dtos.TagDTO;
+import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Tag;
-import com.backendserver.DigitronixProject.models.User;
 import com.backendserver.DigitronixProject.repositories.TagRepository;
+import com.backendserver.DigitronixProject.responses.TagResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -33,29 +34,59 @@ public class TagService implements ITagService {
     }
 
     @Override
-    public List<Tag> getAllTags() {
-        return tagRepository.findAll();
+    public List<TagResponse> getAllTags() {
+        List<Tag> tags = tagRepository.findAll();
+        return tags.stream()
+                .map(TagResponse::fromTag)
+                .collect(Collectors.toList());
+    }
+
+
+//    @Override
+//    public List<TagResponse> getTagsByProductId(Long productId) {
+//        // Assume you have a method in the repository to fetch tags by product ID
+//        List<Tag> findTag = tagRepository.findTagsByProductId(productId);
+//        return findTag.stream()
+//                .map(TagResponse::fromTag)
+//                .collect(Collectors.toList());
+//    }
+
+    @Override
+    public List<TagResponse> getTagsByName(String name){
+        List<Tag> findTag = tagRepository.findByTagNameList(name);
+        return findTag.stream()
+                .map(TagResponse::fromTag)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Tag> getTagsByProductId(Long productId) {
-        // Assume you have a method in the repository to fetch tags by product ID
-        return tagRepository.findTagsByProductId(productId);
-    }
-
-    @Override
-    public void deleteTag(Long tagId) {
+    public String deleteTag(Long tagId) throws DataNotFoundException {
+        Optional<Tag> findTag = tagRepository.findById(tagId);
+        if(findTag.isEmpty()){
+            throw new DataNotFoundException("Cannot find this tag!");
+        }
         tagRepository.deleteById(tagId);
+        return "Delete Successfully";
     }
 
     @Override
-    public Tag updateTag(Long tagId, Tag tag) {
-        Tag existingTag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new RuntimeException("Tag not found"));
+    public Tag getById(long id) {
+        return tagRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Category not found!"));
+    }
 
-        existingTag.setTagName(tag.getTagName());
-        // Set other properties if needed
+    @Override
+    @Transactional
+    public Tag update(long tagId, TagDTO tagDTO) throws Exception{
+        Tag existingTag = getById(tagId);
 
+        // Check the new category has existed before
+        Optional<Tag> existingTagWithName = tagRepository.findByTagName(tagDTO.getTagName());
+        if (existingTagWithName.isPresent() && existingTagWithName.get().getId() != tagId) {
+            throw new RuntimeException("A category with the same name already exists.");
+        }
+
+        existingTag.setTagName(tagDTO.getTagName());
         return tagRepository.save(existingTag);
     }
 }

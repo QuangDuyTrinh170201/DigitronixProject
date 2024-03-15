@@ -1,7 +1,11 @@
 package com.backendserver.DigitronixProject.constrollers;
 
+import com.backendserver.DigitronixProject.dtos.CategoryDTO;
 import com.backendserver.DigitronixProject.dtos.TagDTO;
+import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
+import com.backendserver.DigitronixProject.models.Category;
 import com.backendserver.DigitronixProject.models.Tag;
+import com.backendserver.DigitronixProject.responses.TagResponse;
 import com.backendserver.DigitronixProject.services.ITagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,31 +30,38 @@ public class TagController {
         return ResponseEntity.ok(newTag);
     }
 
-    @GetMapping("")
-    @PreAuthorize("hasRole('ROLE_DIRECTOR')")
-    public ResponseEntity<List<Tag>> getAllTags() {
-        List<Tag> tags = tagService.getAllTags();
-        return ResponseEntity.ok(tags);
+    @GetMapping("/all")
+    public ResponseEntity<List<TagResponse>> getAllTags() {
+        List<TagResponse> tagResponses = tagService.getAllTags();
+        return ResponseEntity.ok(tagResponses);
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("/withName")
     @PreAuthorize("hasRole('ROLE_DIRECTOR')")
-    public ResponseEntity<List<Tag>> getTagsByProductId(@PathVariable Long productId) {
-        List<Tag> tags = tagService.getTagsByProductId(productId);
+    public ResponseEntity<?> getTagsByProductId(@RequestParam(defaultValue = "") String name) {
+        List<TagResponse> tags = tagService.getTagsByName(name);
         return ResponseEntity.ok(tags);
     }
 
     @DeleteMapping("/{tagId}")
     @PreAuthorize("hasRole('ROLE_DIRECTOR')")
-    public ResponseEntity<Void> deleteTag(@PathVariable Long tagId) {
-        tagService.deleteTag(tagId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<String> deleteTag(@PathVariable Long tagId) {
+        try{
+            String message = tagService.deleteTag(tagId);
+            return ResponseEntity.ok(message);
+        }catch (DataNotFoundException ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
-    @PutMapping("/{tagId}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_DIRECTOR')")
-    public ResponseEntity<Tag> updateTag(@PathVariable Long tagId, @RequestBody Tag tag) {
-        Tag updatedTag = tagService.updateTag(tagId, tag);
-        return ResponseEntity.ok(updatedTag);
+    public ResponseEntity<?> updateTag(@PathVariable long id, @RequestBody TagDTO tagDTO) {
+        try {
+            TagResponse updateTag = TagResponse.fromTag(tagService.update(id, tagDTO));
+            return ResponseEntity.ok(updateTag);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
