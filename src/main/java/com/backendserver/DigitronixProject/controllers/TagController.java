@@ -1,14 +1,11 @@
-package com.backendserver.DigitronixProject.constrollers;
+package com.backendserver.DigitronixProject.controllers;
 
-import com.backendserver.DigitronixProject.dtos.CategoryDTO;
 import com.backendserver.DigitronixProject.dtos.TagDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
-import com.backendserver.DigitronixProject.models.Category;
 import com.backendserver.DigitronixProject.models.Tag;
 import com.backendserver.DigitronixProject.responses.TagResponse;
 import com.backendserver.DigitronixProject.services.ITagService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

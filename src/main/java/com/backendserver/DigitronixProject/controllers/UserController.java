@@ -1,10 +1,9 @@
-package com.backendserver.DigitronixProject.constrollers;
+package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.dtos.*;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.User;
 import com.backendserver.DigitronixProject.services.IUserService;
-import com.backendserver.DigitronixProject.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

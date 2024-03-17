@@ -1,4 +1,4 @@
-package com.backendserver.DigitronixProject.constrollers;
+package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.dtos.CategoryDTO;
 import com.backendserver.DigitronixProject.services.CategoryService;

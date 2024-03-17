@@ -1,4 +1,4 @@
-package com.backendserver.DigitronixProject.constrollers;
+package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.dtos.ProductDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
@@ -8,7 +8,7 @@ import com.backendserver.DigitronixProject.responses.ProductResponse;
 import com.backendserver.DigitronixProject.services.IProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -25,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -99,6 +98,27 @@ public class ProductController {
                 .products(products)
                 .totalPages(totalPages)
                 .build());
+    }
+
+    @GetMapping("/images/{imageName}")
+    @PreAuthorize("hasRole('ROLE_DIRECTOR')")
+    public ResponseEntity<?> viewImage(@PathVariable String imageName){
+        try{
+            Path imagePath = Paths.get("uploads/"+imageName);
+            UrlResource resource = new UrlResource(imagePath.toUri());
+
+            if(resource.exists()){
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            }else{
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(new UrlResource(Paths.get("uploads/notfound.jpg").toUri()));
+            }
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/{productId}/tags/{tagId}")

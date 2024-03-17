@@ -32,11 +32,6 @@ public class ProductService implements IProductService{
         Category existingCategory = categoryRepository.findById(productDTO.getCategoryId())
                 .orElseThrow(() -> new DataNotFoundException("Không thể tìm thấy danh mục sản phẩm với id: " + productDTO.getCategoryId()));
 
-        // Kiểm tra xem có sản phẩm nào trùng tên không
-//        Optional<Product> existingProduct = productRepository.findByProductName(productDTO.getProductName());
-//        if(existingProduct.isPresent()) {
-//            throw new RuntimeException("Một sản phẩm cùng tên đã tồn tại.");
-//        }
 
         // Tạo sản phẩm mới
         Product newProduct = new Product();
