@@ -22,7 +22,7 @@ public class ProductResponse extends BaseResponse {
     private Long id;
     private String name;
     private Double price;
-    private UrlResource img;
+    private String img;
     private int quantity;
 
     @JsonProperty("category_id")
@@ -34,21 +34,10 @@ public class ProductResponse extends BaseResponse {
 
     public static ProductResponse fromProduct(Product product) {
         Path imagePath = null;
-        UrlResource resource = null;
         if(product.getImg() == null){
             imagePath = Paths.get("uploads/notfound.jpg");
-            try {
-                resource = new UrlResource(imagePath.toUri());
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
         }else{
             imagePath = Paths.get("uploads/"+product.getImg());
-            try {
-                resource = new UrlResource(imagePath.toUri());
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
         }
         ProductResponse productResponse = null;
             productResponse = ProductResponse.builder()
@@ -56,7 +45,7 @@ public class ProductResponse extends BaseResponse {
                     .name(product.getProductName())
                     .price(product.getPrice())
                     .categoryId(product.getCategory().getId())
-                    .img(resource)
+                    .img(product.getImg())
                     .quantity(product.getQuantity())
                     .tags(product.getTags().stream()
                             .map(Tag::getTagName)
