@@ -19,6 +19,6 @@ public interface IProductService {
     public String deleteProduct(Long productId) throws DataNotFoundException;
     public Product updateProduct(Long id, ProductDTO productDTO) throws DataNotFoundException;
 //  public Product updateProductImageAfter(Long productId, String fileName) throws DataNotFoundException;
-//    public Page<ProductResponse> getProductsWithImage(String keyword, Long categoryId, PageRequest pageRequest);
-
+//  public Page<ProductResponse> getProductsWithImage(String keyword, Long categoryId, PageRequest pageRequest);
+    public Product getProductById(long productId) throws Exception;
 }

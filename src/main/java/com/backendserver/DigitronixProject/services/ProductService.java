@@ -112,5 +112,12 @@ public class ProductService implements IProductService{
         return productRepository.save(existingProduct);
     }
 
-
+    @Override
+    public Product getProductById(long productId) throws Exception {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if(optionalProduct.isPresent()) {
+            return optionalProduct.get();
+        }
+        throw new DataNotFoundException("Cannot find product with id =" + productId);
+    }
 }
