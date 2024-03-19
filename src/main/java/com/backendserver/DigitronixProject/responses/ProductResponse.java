@@ -25,6 +25,9 @@ public class ProductResponse extends BaseResponse {
     private String img;
     private int quantity;
 
+    @JsonProperty("category_name")
+    private String categoryName;
+
     @JsonProperty("category_id")
     private Long categoryId;
 
@@ -45,6 +48,7 @@ public class ProductResponse extends BaseResponse {
                     .name(product.getProductName())
                     .price(product.getPrice())
                     .categoryId(product.getCategory().getId())
+                    .categoryName(product.getCategory().getName())
                     .img(product.getImg())
                     .quantity(product.getQuantity())
                     .tags(product.getTags().stream()
