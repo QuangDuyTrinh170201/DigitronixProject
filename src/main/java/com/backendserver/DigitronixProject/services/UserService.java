@@ -53,25 +53,7 @@ public class UserService implements IUserService{
         return userRepository.save(newUser);
     }
 
-//    @Override
-//    public String Login(String username, String password) throws DataNotFoundException {
-//        Optional<User> optionalUser = userRepository.findByUsername(username);
-//        if(optionalUser.isEmpty()){
-//            throw new DataNotFoundException("Username or password is invalid");
-//        }
-//        User existingUser = optionalUser.get();
-//        //check password
-//        if(!passwordEncoder.matches(password, existingUser.getPassword())){
-//            throw new BadCredentialsException("Wrong username or password!");
-//        }
-//        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-//                username, password,
-//                existingUser.getAuthorities()
-//        );
-//        //authenticate with java spring security
-//        authenticationManager.authenticate(authenticationToken);
-//        return jwtTokenUtil.generateToken(existingUser);
-//    }
+
 
     @Override
     public Map<String, Object> Login(String username, String password) throws DataNotFoundException {

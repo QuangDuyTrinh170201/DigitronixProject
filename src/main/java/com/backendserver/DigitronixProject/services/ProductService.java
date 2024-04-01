@@ -96,6 +96,7 @@ public class ProductService implements IProductService{
         return "Delete Successfully";
     }
 
+    @Override
     public Product updateProduct(Long id, ProductDTO productDTO) throws DataNotFoundException{
         Product existingProduct = productRepository.getById(id);
 

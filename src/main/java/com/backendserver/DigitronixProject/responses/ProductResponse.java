@@ -36,12 +36,6 @@ public class ProductResponse extends BaseResponse {
 
 
     public static ProductResponse fromProduct(Product product) {
-        Path imagePath = null;
-        if(product.getImg() == null){
-            imagePath = Paths.get("uploads/notfound.jpg");
-        }else{
-            imagePath = Paths.get("uploads/"+product.getImg());
-        }
         ProductResponse productResponse = null;
             productResponse = ProductResponse.builder()
                     .id(product.getId())

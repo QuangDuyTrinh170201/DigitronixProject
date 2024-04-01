@@ -90,7 +90,8 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int limit){
 //        logger.info(String.format("keyword = %s, category_id = %d, page = %d, limit = %d", keyword, categoryId, page, limit));
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("id").ascending());
-        Page<ProductResponse> productPage = productService.getAllProducts(keyword, categoryId, pageRequest);
+        Page<ProductResponse> productPage;
+        productPage = productService.getAllProducts(keyword, categoryId, pageRequest);
         int totalPages = productPage.getTotalPages();
         List<ProductResponse> products = productPage.getContent();
         return ResponseEntity.ok(ProductListResponse
