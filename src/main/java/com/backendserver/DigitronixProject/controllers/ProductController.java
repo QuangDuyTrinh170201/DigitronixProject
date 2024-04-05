@@ -102,7 +102,6 @@ public class ProductController {
     }
 
     @GetMapping("/images/{imageName}")
-    @PreAuthorize("hasRole('ROLE_DIRECTOR')")
     public ResponseEntity<?> viewImage(@PathVariable String imageName){
         try{
             Path imagePath = Paths.get("uploads/"+imageName);

@@ -42,15 +42,6 @@ public class TagService implements ITagService {
     }
 
 
-//    @Override
-//    public List<TagResponse> getTagsByProductId(Long productId) {
-//        // Assume you have a method in the repository to fetch tags by product ID
-//        List<Tag> findTag = tagRepository.findTagsByProductId(productId);
-//        return findTag.stream()
-//                .map(TagResponse::fromTag)
-//                .collect(Collectors.toList());
-//    }
-
     @Override
     public List<TagResponse> getTagsByName(String name){
         List<Tag> findTag = tagRepository.findByTagNameList(name);
