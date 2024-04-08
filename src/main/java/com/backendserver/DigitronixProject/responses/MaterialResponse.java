@@ -19,7 +19,7 @@ public class MaterialResponse extends BaseResponse{
     private String name;
     private Double price;
     private String image;
-    private int quantity;
+    private Long quantity;
 
     @JsonProperty("category_name")
     private String categoryName;

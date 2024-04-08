@@ -15,6 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +95,10 @@ public class ProductService implements IProductService{
         if(findProduct.isEmpty()){
             throw new DataNotFoundException("Cannot find this product!");
         }
-        productRepository.deleteById(productId);
+        Path deleteFile = Paths.get("uploads/", findProduct.get().getImg());
+        File file = new File(String.valueOf(deleteFile));
+        file.delete();
+        findProduct.ifPresent(productRepository::delete);
         return "Delete Successfully";
     }
 

@@ -12,13 +12,15 @@ import java.util.List;
 public interface IMaterialService {
     Material createMaterial(MaterialDTO materialDTO) throws DataNotFoundException;
 
-    Page<MaterialResponse> getAllMaterialWithPaging(String keyword, Long id, PageRequest pageRequest);
-
-    Material addTagToMaterial(Long materialId, Long tagId);
+    Page<MaterialResponse> getAllMaterialWithPaging(String keyword, Long categoryId, PageRequest pageRequest) throws Exception;
 
     List<MaterialResponse> getAllMaterialWithoutPaging() throws DataNotFoundException;
 
-    Material updateMaterial(Long id, MaterialDTO materialDTO) throws DataNotFoundException;
+    Material updateMaterial(Long id, MaterialDTO materialDTO) throws Exception;
 
     void deleteMaterial(Long id) throws DataNotFoundException;
+
+    Material addTagToMaterial(Long materialId, Long tagId);
+
+    Material updateMaterialImage(Long materialId, String fileName) throws DataNotFoundException;
 }

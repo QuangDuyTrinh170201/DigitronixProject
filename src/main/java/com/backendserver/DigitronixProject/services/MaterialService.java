@@ -19,6 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,10 +46,10 @@ public class MaterialService implements IMaterialService{
     }
 
     @Override
-    public Page<MaterialResponse> getAllMaterialWithPaging(String keyword, Long id, PageRequest pageRequest) {
-        //lâý danh sách sản phẩm theo page và limit
+    public Page<MaterialResponse> getAllMaterialWithPaging(String keyword, Long categoryId, PageRequest pageRequest) throws Exception {
+
         Page<Material> materialPage;
-        materialPage = materialRepository.searchMaterial(id, keyword, pageRequest);
+        materialPage = materialRepository.searchMaterial(categoryId, keyword, pageRequest);
         return materialPage.map(MaterialResponse::fromMaterial);
     }
 
@@ -66,36 +69,51 @@ public class MaterialService implements IMaterialService{
             throw new DataNotFoundException("Cannot find this material to delete, please check again!");
         }
         else {
-            materialRepository.deleteById(id);
+            Path deleteFile = Paths.get("uploads/", material.get().getImage());
+            File file = new File(String.valueOf(deleteFile));
+            file.delete();
+            material.ifPresent(materialRepository::delete);
         }
     }
 
     @Override
     @Transactional
     public Material updateMaterial(Long id, MaterialDTO materialDTO) throws DataNotFoundException {
-        Optional<Material> findExistMaterial = materialRepository.findById(id);
-        if(findExistMaterial.isEmpty()){
-            throw new DataNotFoundException("Cannot find this material!");
+        Material findExistMaterial = materialRepository.getReferenceById(id);
+        Optional<MaterialCategory> existingCat = materialCategoryRepository.findById(materialDTO.getCategoryId());
+        if(existingCat.isEmpty()){
+            throw new DataNotFoundException("Cannot find this category!");
         }
-        MaterialCategory existingCat = materialCategoryRepository.findById(materialDTO.getCategoryId())
-                .orElseThrow(() -> new DataIntegrityViolationException("Cannot find this material category!"));
-        String oldImage = findExistMaterial.get().getImage();
-        findExistMaterial.get().setCategory(existingCat);
-        findExistMaterial.get().setName(materialDTO.getName());
-        findExistMaterial.get().setQuantity(materialDTO.getQuantity());
-        findExistMaterial.get().setPrice(materialDTO.getPrice());
-        findExistMaterial.get().setImage(oldImage);
-        return materialRepository.save(findExistMaterial.get());
+        String oldImage = findExistMaterial.getImage();
+        findExistMaterial.setCategory(existingCat.get());
+        findExistMaterial.setName(materialDTO.getName());
+        findExistMaterial.setQuantity(materialDTO.getQuantity());
+        findExistMaterial.setPrice(materialDTO.getPrice());
+        findExistMaterial.setImage(oldImage);
+        return materialRepository.save(findExistMaterial);
     }
 
     @Override
+    @Transactional
+    public Material updateMaterialImage(Long materialId, String fileName) throws DataNotFoundException {
+        // Tìm sản phẩm theo ID
+        Material existingMaterial = materialRepository.findById(materialId)
+                .orElseThrow(() -> new DataNotFoundException("Không thể tìm thấy sản phẩm với id: " + materialId));
+
+        // Thêm URL hình ảnh vào cột img_url của sản phẩm
+        existingMaterial.setImage(fileName);
+        return materialRepository.save(existingMaterial);
+    }
+
+
+    @Override
+    @Transactional
     public Material addTagToMaterial(Long materialId, Long tagId) {
         Material material = materialRepository.findById(materialId)
                 .orElseThrow(() -> new RuntimeException("Material not found"));
 
         Tag tag = tagRepository.findById(tagId)
                 .orElseThrow(() -> new RuntimeException("Tag not found"));
-
         // Kiểm tra xem sản phẩm đã có tag chưa
         if (material.getTags().contains(tag)) {
             throw new IllegalArgumentException("Material already has this tag");

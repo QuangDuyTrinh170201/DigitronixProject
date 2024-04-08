@@ -82,7 +82,6 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ROLE_DIRECTOR')")
     public ResponseEntity<ProductListResponse> getProducts(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0", name = "category_id") Long categoryId,

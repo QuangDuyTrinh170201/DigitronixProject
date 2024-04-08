@@ -36,7 +36,7 @@ public class Material extends BaseEntity{
     @ManyToMany
     @JoinTable(
             name = "material_tags_mapping",
-            joinColumns = @JoinColumn(name = "material_name"),
+            joinColumns = @JoinColumn(name = "material_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private Set<Tag> tags;

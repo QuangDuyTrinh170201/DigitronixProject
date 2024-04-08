@@ -2,6 +2,7 @@ package com.backendserver.DigitronixProject.responses;
 
 import com.backendserver.DigitronixProject.models.Product;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
 import java.net.MalformedURLException;
@@ -19,6 +20,7 @@ import org.springframework.core.io.UrlResource;
 @NoArgsConstructor
 @Builder
 public class ProductResponse extends BaseResponse {
+
     private Long id;
     private String name;
     private Double price;
