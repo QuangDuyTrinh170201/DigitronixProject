@@ -82,6 +82,7 @@ public class ProductController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('ROLE_DIRECTOR', 'ROLE_SALE', 'ROLE_PRODUCTION_MANAGER', 'ROLE_INVENTORY_MANAGER', 'ROLE_WORKER', 'ROLE_DRIVER')")
     public ResponseEntity<ProductListResponse> getProducts(
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0", name = "category_id") Long categoryId,
@@ -150,7 +151,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_DIRECTOR')")
+    @PreAuthorize("hasAnyRole('ROLE_DIRECTOR', 'ROLE_SALE', 'ROLE_PRODUCTION_MANAGER', 'ROLE_INVENTORY_MANAGER', 'ROLE_WORKER', 'ROLE_DRIVER')")
     public ResponseEntity<?> getProductById(@PathVariable("id") Long productId){
         try {
             Product existingProduct = productService.getProductById(productId);
