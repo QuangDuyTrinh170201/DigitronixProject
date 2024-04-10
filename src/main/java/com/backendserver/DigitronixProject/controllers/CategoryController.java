@@ -63,7 +63,7 @@ public class CategoryController {
             Category updatedCategory = categoryService.update(id, categoryDTO);
             return ResponseEntity.ok(updatedCategory);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
