@@ -95,11 +95,16 @@ public class ProductService implements IProductService{
         if(findProduct.isEmpty()){
             throw new DataNotFoundException("Cannot find this product!");
         }
-        Path deleteFile = Paths.get("uploads/", findProduct.get().getImg());
-        File file = new File(String.valueOf(deleteFile));
-        file.delete();
-        findProduct.ifPresent(productRepository::delete);
-        return "Delete Successfully";
+        if(findProduct.get().getImg() == null){
+            findProduct.ifPresent(productRepository::delete);
+            return "Delete Successfully, but the application cannot find image!";
+        }else{
+            Path deleteFile = Paths.get("uploads/", findProduct.get().getImg());
+            File file = new File(String.valueOf(deleteFile));
+            file.delete();
+            findProduct.ifPresent(productRepository::delete);
+            return "Delete product successfully";
+        }
     }
 
     @Override
