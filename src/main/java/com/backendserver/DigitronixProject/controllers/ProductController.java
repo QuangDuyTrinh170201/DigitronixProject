@@ -143,7 +143,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ROLE_DIRECTOR')")
     public ResponseEntity<?> updateProduct(@PathVariable long id, @RequestBody ProductDTO productDTO){
         try{
-            Product updatedProduct = productService.updateProduct(id, productDTO);
+            ProductResponse updatedProduct = productService.updateProduct(id, productDTO);
             return ResponseEntity.ok(updatedProduct);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

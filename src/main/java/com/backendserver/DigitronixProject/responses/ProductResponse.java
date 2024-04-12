@@ -34,7 +34,7 @@ public class ProductResponse extends BaseResponse {
     private Long categoryId;
 
     @JsonProperty("tags")
-    private List<String> tags;
+    private List<TagMapResponse> tags;
 
 
     public static ProductResponse fromProduct(Product product) {
@@ -48,7 +48,12 @@ public class ProductResponse extends BaseResponse {
                     .img(product.getImg())
                     .quantity(product.getQuantity())
                     .tags(product.getTags().stream()
-                            .map(Tag::getTagName)
+                            .map(tag -> {
+                                TagMapResponse tagResponse = new TagMapResponse();
+                                tagResponse.setId(tag.getId());
+                                tagResponse.setName(tag.getTagName());
+                                return tagResponse;
+                            })
                             .collect(Collectors.toList()))
                     .build();
         productResponse.setCreatedAt(product.getCreatedAt());

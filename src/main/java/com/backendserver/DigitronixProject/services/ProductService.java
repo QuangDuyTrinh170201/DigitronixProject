@@ -104,7 +104,7 @@ public class ProductService implements IProductService{
 
     @Override
     @Transactional
-    public Product updateProduct(Long id, ProductDTO productDTO) throws DataNotFoundException{
+    public ProductResponse updateProduct(Long id, ProductDTO productDTO) throws DataNotFoundException{
         Product existingProduct = productRepository.getById(id);
 
         Category existingCategory = categoryRepository
@@ -117,7 +117,8 @@ public class ProductService implements IProductService{
         existingProduct.setCategory(existingCategory);
         existingProduct.setImg(oldImage);
         existingProduct.setQuantity(productDTO.getQuantity());
-        return productRepository.save(existingProduct);
+        productRepository.save(existingProduct);
+        return ProductResponse.fromProduct(existingProduct);
     }
 
     @Override
