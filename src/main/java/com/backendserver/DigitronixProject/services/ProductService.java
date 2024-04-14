@@ -8,6 +8,7 @@ import com.backendserver.DigitronixProject.models.Tag;
 import com.backendserver.DigitronixProject.repositories.CategoryRepository;
 import com.backendserver.DigitronixProject.repositories.ProductRepository;
 import com.backendserver.DigitronixProject.repositories.TagRepository;
+import com.backendserver.DigitronixProject.responses.ProcessResponse;
 import com.backendserver.DigitronixProject.responses.ProductResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,15 @@ public class ProductService implements IProductService{
         Page<Product> productPage;
         productPage = productRepository.searchProducts(categoryId, keyword, pageRequest);
         return productPage.map(ProductResponse::fromProduct);
+    }
+
+    @Override
+    public List<ProductResponse> getAllProductNoPaging() throws DataNotFoundException {
+        List<Product> productList = productRepository.findAll();
+        if(productList.isEmpty()){
+            throw new DataNotFoundException("Cannot find any product in application");
+        }
+        return productList.stream().map(ProductResponse::fromProduct).toList();
     }
 
     @Override

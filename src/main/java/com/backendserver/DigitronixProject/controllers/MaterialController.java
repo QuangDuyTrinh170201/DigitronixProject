@@ -69,6 +69,16 @@ public class MaterialController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getMaterialById (@PathVariable Long id){
+        try{
+            MaterialResponse materialResponse = materialService.getMaterialWithId(id);
+            return ResponseEntity.ok(materialResponse);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_DIRECTOR')")
     public ResponseEntity<?> createMaterial(@RequestBody MaterialDTO materialDTO){
@@ -84,7 +94,7 @@ public class MaterialController {
     @PreAuthorize("hasRole('ROLE_DIRECTOR')")
     public ResponseEntity<?> updateMaterials(@PathVariable Long id, @RequestBody MaterialDTO materialDTO){
         try{
-            Material updateMaterial = materialService.updateMaterial(id, materialDTO);
+            MaterialResponse updateMaterial = materialService.updateMaterial(id, materialDTO);
             return ResponseEntity.ok(updateMaterial);
         }catch (Exception ex){
             return ResponseEntity.badRequest().body(ex.getMessage());

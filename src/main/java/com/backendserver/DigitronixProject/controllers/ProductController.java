@@ -121,6 +121,17 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/allNoPaging")
+    @PreAuthorize("hasAnyRole('ROLE_DIRECTOR', 'ROLE_SALE', 'ROLE_PRODUCTION_MANAGER', 'ROLE_INVENTORY_MANAGER', 'ROLE_WORKER', 'ROLE_DRIVER')")
+    public ResponseEntity<?> getAllProductNoPaging(){
+        try{
+            List<ProductResponse> productResponse = productService.getAllProductNoPaging();
+            return ResponseEntity.ok(productResponse);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/{productId}/tags/{tagId}")
     @PreAuthorize("hasRole('ROLE_DIRECTOR')")
     public ResponseEntity<String> addTagToProduct(@PathVariable Long productId, @PathVariable Long tagId) {

@@ -16,11 +16,13 @@ public interface IMaterialService {
 
     List<MaterialResponse> getAllMaterialWithoutPaging() throws DataNotFoundException;
 
-    Material updateMaterial(Long id, MaterialDTO materialDTO) throws Exception;
+    MaterialResponse updateMaterial(Long id, MaterialDTO materialDTO) throws Exception;
 
     void deleteMaterial(Long id) throws DataNotFoundException;
 
     Material addTagToMaterial(Long materialId, Long tagId);
 
     Material updateMaterialImage(Long materialId, String fileName) throws DataNotFoundException;
+
+    MaterialResponse getMaterialWithId(Long id) throws DataNotFoundException;
 }

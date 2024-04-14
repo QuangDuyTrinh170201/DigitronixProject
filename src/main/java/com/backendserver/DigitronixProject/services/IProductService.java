@@ -11,14 +11,13 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 public interface IProductService {
-    public Product createProductInfo(ProductDTO productDTO) throws DataNotFoundException, InvalidParameterException;
+    Product createProductInfo(ProductDTO productDTO) throws DataNotFoundException, InvalidParameterException;
 
-    public Product updateProductImage(Long productId, String fileName) throws DataNotFoundException;
-    public Page<ProductResponse> getAllProducts(String keyword, Long categoryId, PageRequest pageRequest);
-    public Product addTagToProduct(Long productId, Long tagId);
-    public String deleteProduct(Long productId) throws DataNotFoundException;
-    public ProductResponse updateProduct(Long id, ProductDTO productDTO) throws DataNotFoundException;
-//  public Product updateProductImageAfter(Long productId, String fileName) throws DataNotFoundException;
-//  public Page<ProductResponse> getProductsWithImage(String keyword, Long categoryId, PageRequest pageRequest);
-    public Product getProductById(long productId) throws Exception;
+    Product updateProductImage(Long productId, String fileName) throws DataNotFoundException;
+    Page<ProductResponse> getAllProducts(String keyword, Long categoryId, PageRequest pageRequest);
+    Product addTagToProduct(Long productId, Long tagId);
+    String deleteProduct(Long productId) throws DataNotFoundException;
+    ProductResponse updateProduct(Long id, ProductDTO productDTO) throws DataNotFoundException;
+    Product getProductById(long productId) throws Exception;
+    List<ProductResponse> getAllProductNoPaging() throws DataNotFoundException;
 }

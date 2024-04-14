@@ -28,7 +28,7 @@ public class MaterialResponse extends BaseResponse{
     private Long categoryId;
 
     @JsonProperty("tags")
-    private List<String> tags;
+    private List<TagMapResponse> tags;
 
     public static MaterialResponse fromMaterial(Material material) {
         MaterialResponse materialResponse = null;
@@ -41,7 +41,12 @@ public class MaterialResponse extends BaseResponse{
                 .image(material.getImage())
                 .quantity(material.getQuantity())
                 .tags(material.getTags().stream()
-                        .map(Tag::getTagName)
+                        .map(tag -> {
+                            TagMapResponse tagResponse = new TagMapResponse();
+                            tagResponse.setId(tag.getId());
+                            tagResponse.setName(tag.getTagName());
+                            return tagResponse;
+                        })
                         .collect(Collectors.toList()))
                 .build();
         materialResponse.setCreatedAt(material.getCreatedAt());

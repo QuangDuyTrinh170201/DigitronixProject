@@ -4,17 +4,13 @@ import com.backendserver.DigitronixProject.dtos.MaterialDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Material;
 import com.backendserver.DigitronixProject.models.MaterialCategory;
-import com.backendserver.DigitronixProject.models.Product;
 import com.backendserver.DigitronixProject.models.Tag;
 import com.backendserver.DigitronixProject.repositories.MaterialCategoryRepository;
 import com.backendserver.DigitronixProject.repositories.MaterialRepository;
 import com.backendserver.DigitronixProject.repositories.TagRepository;
 import com.backendserver.DigitronixProject.responses.MaterialResponse;
-import com.backendserver.DigitronixProject.responses.ProductResponse;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -63,6 +59,12 @@ public class MaterialService implements IMaterialService{
     }
 
     @Override
+    public MaterialResponse getMaterialWithId(Long id) throws DataNotFoundException {
+        Material existingMaterial = materialRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Cannot find this material"));
+        return MaterialResponse.fromMaterial(existingMaterial);
+    }
+
+    @Override
     public void deleteMaterial(Long id) throws DataNotFoundException {
         Optional<Material> material = materialRepository.findById(id);
         if(material.isEmpty()){
@@ -78,7 +80,7 @@ public class MaterialService implements IMaterialService{
 
     @Override
     @Transactional
-    public Material updateMaterial(Long id, MaterialDTO materialDTO) throws DataNotFoundException {
+    public MaterialResponse updateMaterial(Long id, MaterialDTO materialDTO) throws DataNotFoundException {
         Material findExistMaterial = materialRepository.getReferenceById(id);
         Optional<MaterialCategory> existingCat = materialCategoryRepository.findById(materialDTO.getCategoryId());
         if(existingCat.isEmpty()){
@@ -90,7 +92,7 @@ public class MaterialService implements IMaterialService{
         findExistMaterial.setQuantity(materialDTO.getQuantity());
         findExistMaterial.setPrice(materialDTO.getPrice());
         findExistMaterial.setImage(oldImage);
-        return materialRepository.save(findExistMaterial);
+        return MaterialResponse.fromMaterial(materialRepository.save(findExistMaterial));
     }
 
     @Override
