@@ -63,4 +63,9 @@ public class ProcessService implements IProcessService{
         Process findDel = processRepository.findById(id).orElseThrow(() -> new DataIntegrityViolationException("Cannot find this process!"));
         processRepository.delete(findDel);
     }
+    @Override
+    public List<ProcessResponse> getProcessByProductId(Long id){
+        List<Process> findProcess = processRepository.findProcessesByProductId(id);
+        return findProcess.stream().map(ProcessResponse::fromProcess).toList();
+    }
 }

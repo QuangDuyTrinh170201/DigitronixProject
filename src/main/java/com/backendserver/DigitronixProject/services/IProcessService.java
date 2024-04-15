@@ -17,4 +17,6 @@ public interface IProcessService {
     ProcessResponse updateProcess(Long id, ProcessDTO processDTO) throws Exception;
 
     void deleteProcess(Long id) throws Exception;
+
+    List<ProcessResponse> getProcessByProductId(Long id);
 }

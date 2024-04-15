@@ -75,4 +75,15 @@ public class ProcessController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/product/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_PRODUCTION_MANAGER', 'ROLE_DIRECTOR')")
+    public ResponseEntity<?> getProcessByProductId(@PathVariable Long id){
+        try{
+            List<ProcessResponse> processResponse = processService.getProcessByProductId(id);
+            return ResponseEntity.ok(processResponse);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

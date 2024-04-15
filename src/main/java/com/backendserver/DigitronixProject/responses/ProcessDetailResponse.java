@@ -21,7 +21,7 @@ public class ProcessDetailResponse extends BaseResponse{
     @JsonProperty("process_id")
     private Long processId;
 
-    public static ProcessDetailResponse fromProcess(ProcessDetail processDetail){
+    public static ProcessDetailResponse fromProcessDetail(ProcessDetail processDetail){
         ProcessDetailResponse response = ProcessDetailResponse.builder()
                 .id(processDetail.getId())
                 .detailName(processDetail.getDetailName())
