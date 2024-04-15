@@ -70,10 +70,12 @@ public class MaterialService implements IMaterialService{
         if(material.isEmpty()){
             throw new DataNotFoundException("Cannot find this material to delete, please check again!");
         }
-        else {
+        else if(material.get().getImage() != null){
             Path deleteFile = Paths.get("uploads/", material.get().getImage());
             File file = new File(String.valueOf(deleteFile));
             file.delete();
+            material.ifPresent(materialRepository::delete);
+        }else{
             material.ifPresent(materialRepository::delete);
         }
     }
