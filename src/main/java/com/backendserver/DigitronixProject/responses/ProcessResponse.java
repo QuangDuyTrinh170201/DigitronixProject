@@ -5,6 +5,7 @@ import com.backendserver.DigitronixProject.models.ProcessDetail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -24,13 +25,16 @@ public class ProcessResponse extends BaseResponse{
     @JsonProperty("process_details")
     private List<ProcessDetailResponse> processDetails;
 
-    public static ProcessResponse fromProcess(Process process){
+    public static ProcessResponse fromProcess(Process process) {
         ProcessResponse response = ProcessResponse.builder()
                 .id(process.getId())
                 .processName(process.getProcessName())
                 .productId(process.getProduct().getId())
-                .processDetails(process.getProcessDetails().stream().map(ProcessDetailResponse::fromProcessDetail).toList())
+                .processDetails(process.getProcessDetails() != null ?
+                        process.getProcessDetails().stream().map(ProcessDetailResponse::fromProcessDetail).toList() :
+                        Collections.emptyList()) // Trả về mảng rỗng nếu processDetails là null
                 .build();
+
         response.setCreatedAt(process.getCreatedAt());
         response.setUpdatedAt(process.getUpdatedAt());
 
