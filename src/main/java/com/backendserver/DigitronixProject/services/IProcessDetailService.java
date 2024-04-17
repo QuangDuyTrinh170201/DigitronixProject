@@ -16,4 +16,5 @@ public interface IProcessDetailService {
     ProcessDetailResponse updateProcessDetail(Long id, ProcessDetailDTO processDetailDTO) throws Exception;
 
     void deleteProcessDetail(Long id) throws Exception;
+
 }

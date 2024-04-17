@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,13 +51,19 @@ public class ProcessDetailService implements IProcessDetailService{
 
     @Override
     public ProcessDetailResponse updateProcessDetail(Long id, ProcessDetailDTO processDetailDTO) throws Exception {
-        ProcessDetail checkExistingProcessDetail = processDetailRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Cannot find this process detail!"));
+        ProcessDetail checkExistingProcessDetail = processDetailRepository.getReferenceById(id);
+        Process checkProcess = processRepository.findById(processDetailDTO.getProcessId()).orElseThrow(() -> new DataNotFoundException("Cannot find this process"));
 
-        return null;
+        checkExistingProcessDetail.setDetailName(processDetailDTO.getDetailName());
+        checkExistingProcessDetail.setIntensity(processDetailDTO.getIntensity());
+        checkExistingProcessDetail.setProcess(checkProcess);
+        processDetailRepository.save(checkExistingProcessDetail);
+        return ProcessDetailResponse.fromProcessDetail(checkExistingProcessDetail);
     }
 
     @Override
     public void deleteProcessDetail(Long id) throws Exception {
-
+        ProcessDetail checkExist = processDetailRepository.findById(id).orElseThrow(() -> new DataNotFoundException("cannot find this process detail!"));
+        processDetailRepository.delete(checkExist);
     }
 }

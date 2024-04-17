@@ -1,5 +1,6 @@
 package com.backendserver.DigitronixProject.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,5 +24,6 @@ public class ProcessDetail extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "process_id")
+    @JsonBackReference
     private Process process;
 }
