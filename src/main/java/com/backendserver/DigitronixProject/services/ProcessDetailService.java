@@ -1,5 +1,6 @@
 package com.backendserver.DigitronixProject.services;
 
+import com.backendserver.DigitronixProject.dtos.HandleProcessDetailDTO;
 import com.backendserver.DigitronixProject.dtos.ProcessDetailDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Process;
@@ -44,6 +45,9 @@ public class ProcessDetailService implements IProcessDetailService{
         newProcessDetail.setDetailName(processDetailDTO.getDetailName());
         newProcessDetail.setIntensity(processDetailDTO.getIntensity());
         newProcessDetail.setProcess(findProcess);
+        newProcessDetail.setIsFinal(processDetailDTO.getIsFinal());
+        newProcessDetail.setInMaterialId(processDetailDTO.getInMaterialId());
+        newProcessDetail.setOutId(processDetailDTO.getOutId());
 
         newProcessDetail = processDetailRepository.save(newProcessDetail);
         return ProcessDetailResponse.fromProcessDetail(newProcessDetail);
@@ -57,8 +61,71 @@ public class ProcessDetailService implements IProcessDetailService{
         checkExistingProcessDetail.setDetailName(processDetailDTO.getDetailName());
         checkExistingProcessDetail.setIntensity(processDetailDTO.getIntensity());
         checkExistingProcessDetail.setProcess(checkProcess);
+        checkExistingProcessDetail.setIsFinal(processDetailDTO.getIsFinal());
+        checkExistingProcessDetail.setInMaterialId(processDetailDTO.getInMaterialId());
+        checkExistingProcessDetail.setOutId(processDetailDTO.getOutId());
         processDetailRepository.save(checkExistingProcessDetail);
         return ProcessDetailResponse.fromProcessDetail(checkExistingProcessDetail);
+    }
+
+    @Override
+    public String switchProcessIntensity(Long id, HandleProcessDetailDTO handleProcessDetailDTO) throws Exception{
+        ProcessDetail checkExist = processDetailRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Cannot find this process detail!"));
+        if(checkExist.getIntensity() == null){
+            throw new DataNotFoundException("Cannot find intensity of this process detail!");
+        }
+        ProcessDetail findAnotherProcessWithIntensity = processDetailRepository.findByIntensity(handleProcessDetailDTO.getIntensity());
+        Long varSwitchIntensityBefore = checkExist.getIntensity();
+        if(findAnotherProcessWithIntensity != null){
+            checkExist.setIntensity(findAnotherProcessWithIntensity.getIntensity());
+            findAnotherProcessWithIntensity.setIntensity(varSwitchIntensityBefore);
+            List<ProcessDetail> processDetailList = processDetailRepository.findProcessDetailByProcessId(checkExist.getProcess().getId());
+            for (ProcessDetail processDetail : processDetailList) {
+                processDetail.setIsFinal(false);
+                // Lưu các thay đổi vào cơ sở dữ liệu
+                processDetailRepository.save(processDetail);
+            }
+        }else{
+            checkExist.setIntensity(handleProcessDetailDTO.getIntensity());
+            List<ProcessDetail> processDetailList = processDetailRepository.findProcessDetailByProcessId(checkExist.getProcess().getId());
+            for (ProcessDetail processDetail : processDetailList) {
+                processDetail.setIsFinal(false);
+                // Lưu các thay đổi vào cơ sở dữ liệu
+                processDetailRepository.save(processDetail);
+            }
+        }
+        return "Switch intensity success!";
+    }
+
+    @Override
+    public String setIsFinal(Long id) {
+        List<ProcessDetail> processDetailList = processDetailRepository.findProcessDetailByProcessId(id);
+
+        // Khởi tạo biến lưu trữ intensity cao nhất và index của ProcessDetail có intensity cao nhất
+        Long maxIntensity = Long.MIN_VALUE;
+        int maxIntensityIndex = -1;
+
+        // Duyệt qua danh sách để tìm intensity cao nhất
+        for (int i = 0; i < processDetailList.size(); i++) {
+            ProcessDetail processDetail = processDetailList.get(i);
+            Long intensity = processDetail.getIntensity();
+
+            // So sánh intensity hiện tại với intensity cao nhất đã tìm thấy trước đó
+            if (intensity != null && intensity > maxIntensity) {
+                maxIntensity = intensity;
+                maxIntensityIndex = i;
+            }
+        }
+
+        // Đặt isFinal của ProcessDetail có intensity cao nhất là true và lưu vào cơ sở dữ liệu
+        if (maxIntensityIndex != -1) {
+            ProcessDetail processDetailWithMaxIntensity = processDetailList.get(maxIntensityIndex);
+            processDetailWithMaxIntensity.setIsFinal(true);
+            processDetailRepository.save(processDetailWithMaxIntensity);
+        }
+
+        return "Set isFinal success!";
     }
 
     @Override

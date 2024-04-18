@@ -1,5 +1,6 @@
 package com.backendserver.DigitronixProject.services;
 
+import com.backendserver.DigitronixProject.dtos.HandleProcessDetailDTO;
 import com.backendserver.DigitronixProject.dtos.ProcessDetailDTO;
 import com.backendserver.DigitronixProject.models.ProcessDetail;
 import com.backendserver.DigitronixProject.responses.ProcessDetailResponse;
@@ -17,4 +18,7 @@ public interface IProcessDetailService {
 
     void deleteProcessDetail(Long id) throws Exception;
 
+    String switchProcessIntensity(Long id, HandleProcessDetailDTO handleProcessDetailDTO) throws Exception;
+
+    String setIsFinal(Long id);
 }

@@ -20,7 +20,16 @@ public class ProcessDetail extends BaseEntity{
     private String detailName;
 
     @Column(name = "intensity", nullable = false)
-    private Long Intensity;
+    private Long intensity;
+
+    @Column(name = "is_final")
+    private Boolean isFinal;
+
+    @Column(name = "in_material_id", nullable = false)
+    private Long inMaterialId;
+
+    @Column(name = "out_id", nullable = false)
+    private Long outId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "process_id")

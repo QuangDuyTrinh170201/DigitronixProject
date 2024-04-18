@@ -1,5 +1,6 @@
 package com.backendserver.DigitronixProject.controllers;
 
+import com.backendserver.DigitronixProject.dtos.HandleProcessDetailDTO;
 import com.backendserver.DigitronixProject.dtos.ProcessDetailDTO;
 import com.backendserver.DigitronixProject.responses.ProcessDetailResponse;
 import com.backendserver.DigitronixProject.services.IProcessDetailService;
@@ -66,6 +67,28 @@ public class ProcessDetailController {
         try{
             processDetailService.deleteProcessDetail(id);
             return ResponseEntity.ok("Deleted successfully");
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_PRODUCTION_MANAGER')")
+    public ResponseEntity<?> switchIntensity(@PathVariable Long id, @RequestBody HandleProcessDetailDTO handleProcessDetailDTO){
+        try{
+            String value = processDetailService.switchProcessIntensity(id, handleProcessDetailDTO);
+            return ResponseEntity.ok(value);
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/setIsFinal/{id}")
+    @PreAuthorize("hasRole('ROLE_PRODUCTION_MANAGER')")
+    public ResponseEntity<?> setIsFinal(@PathVariable Long id){
+        try{
+            String value = processDetailService.setIsFinal(id);
+            return ResponseEntity.ok(value);
         }catch (Exception ex){
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
