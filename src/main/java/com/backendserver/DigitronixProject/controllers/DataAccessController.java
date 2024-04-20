@@ -3,7 +3,7 @@ package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.dtos.DataAccessDTO;
 import com.backendserver.DigitronixProject.models.DataAccess;
-import com.backendserver.DigitronixProject.services.DataAccessService;
+import com.backendserver.DigitronixProject.services.DataAccess.DataAccessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,12 +1,9 @@
 package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.dtos.ProcessDTO;
-import com.backendserver.DigitronixProject.models.Process;
 import com.backendserver.DigitronixProject.responses.ProcessResponse;
-import com.backendserver.DigitronixProject.services.IProcessService;
-import lombok.AllArgsConstructor;
+import com.backendserver.DigitronixProject.services.Process.IProcessService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;

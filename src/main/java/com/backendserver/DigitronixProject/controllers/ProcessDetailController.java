@@ -3,7 +3,7 @@ package com.backendserver.DigitronixProject.controllers;
 import com.backendserver.DigitronixProject.dtos.HandleProcessDetailDTO;
 import com.backendserver.DigitronixProject.dtos.ProcessDetailDTO;
 import com.backendserver.DigitronixProject.responses.ProcessDetailResponse;
-import com.backendserver.DigitronixProject.services.IProcessDetailService;
+import com.backendserver.DigitronixProject.services.ProcessDetail.IProcessDetailService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

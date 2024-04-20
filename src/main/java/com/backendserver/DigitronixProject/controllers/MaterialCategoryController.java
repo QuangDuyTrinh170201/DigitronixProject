@@ -2,7 +2,7 @@ package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.dtos.MaterialCategoryDTO;
 import com.backendserver.DigitronixProject.models.MaterialCategory;
-import com.backendserver.DigitronixProject.services.IMaterialCategoryService;
+import com.backendserver.DigitronixProject.services.MaterialCategory.IMaterialCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

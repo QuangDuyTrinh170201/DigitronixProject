@@ -1,9 +1,8 @@
 package com.backendserver.DigitronixProject.controllers;
 
-import com.backendserver.DigitronixProject.dtos.ProductTagMappingDTO;
 import com.backendserver.DigitronixProject.models.Product;
 import com.backendserver.DigitronixProject.models.Tag;
-import com.backendserver.DigitronixProject.services.IProductTagMappingService;
+import com.backendserver.DigitronixProject.services.ProductTagMappingService.IProductTagMappingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

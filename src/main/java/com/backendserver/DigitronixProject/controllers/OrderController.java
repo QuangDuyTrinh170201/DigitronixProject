@@ -2,7 +2,7 @@ package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.dtos.OrderDTO;
 import com.backendserver.DigitronixProject.responses.OrderResponse;
-import com.backendserver.DigitronixProject.services.IOrderService;
+import com.backendserver.DigitronixProject.services.Order.IOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

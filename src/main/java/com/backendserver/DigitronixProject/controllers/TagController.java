@@ -4,7 +4,7 @@ import com.backendserver.DigitronixProject.dtos.TagDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Tag;
 import com.backendserver.DigitronixProject.responses.TagResponse;
-import com.backendserver.DigitronixProject.services.ITagService;
+import com.backendserver.DigitronixProject.services.Tag.ITagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

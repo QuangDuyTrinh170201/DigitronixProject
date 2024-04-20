@@ -1,7 +1,7 @@
 package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.models.Role;
-import com.backendserver.DigitronixProject.services.IRoleService;
+import com.backendserver.DigitronixProject.services.Role.IRoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

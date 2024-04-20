@@ -1,7 +1,7 @@
 package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.dtos.CategoryDTO;
-import com.backendserver.DigitronixProject.services.CategoryService;
+import com.backendserver.DigitronixProject.services.Category.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;

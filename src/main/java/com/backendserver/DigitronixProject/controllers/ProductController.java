@@ -5,7 +5,7 @@ import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Product;
 import com.backendserver.DigitronixProject.responses.ProductListResponse;
 import com.backendserver.DigitronixProject.responses.ProductResponse;
-import com.backendserver.DigitronixProject.services.IProductService;
+import com.backendserver.DigitronixProject.services.Product.IProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.UrlResource;
