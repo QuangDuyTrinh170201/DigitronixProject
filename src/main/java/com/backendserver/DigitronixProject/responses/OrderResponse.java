@@ -41,6 +41,12 @@ public class OrderResponse extends BaseResponse{
     @JsonProperty("user_id")
     private Long userId;
 
+    @JsonProperty("user_name")
+    private String userName;
+
+    @JsonProperty("customer_name")
+    private String customerName;
+
     @JsonProperty("customer_id")
     private Long customerId;
 
@@ -55,7 +61,9 @@ public class OrderResponse extends BaseResponse{
                 .totalPrice(order.getTotalPrice())
                 .status(order.getStatus())
                 .userId(order.getUser().getId())
+                .userName(order.getUser().getUsername())
                 .customerId(order.getCustomer().getId())
+                .customerName(order.getCustomer().getName())
                 .build();
         orderResponse.setCreatedAt(order.getCreatedAt());
         orderResponse.setUpdatedAt(order.getUpdatedAt());
