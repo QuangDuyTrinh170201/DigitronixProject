@@ -82,4 +82,15 @@ public class OrderController {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
+
+    @GetMapping("/user/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_SALE', 'ROLE_DIRECTOR')")
+    public ResponseEntity<?> getOrderByUserId(@PathVariable Long id){
+        try{
+            List<OrderResponse> orderResponse = orderService.getOrderByUserId(id);
+            return ResponseEntity.ok(orderResponse);
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
 }

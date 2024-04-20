@@ -17,4 +17,6 @@ public interface IOrderService {
     void deleteOrder(Long id) throws Exception;
 
     List<OrderResponse> getOrderByCustomerId(Long id);
+
+    List<OrderResponse> getOrderByUserId(Long id) throws Exception;
 }

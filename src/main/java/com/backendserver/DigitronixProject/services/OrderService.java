@@ -81,4 +81,10 @@ public class OrderService implements IOrderService{
         List<Order> orderList = orderRepository.findOrderByCustomerId(id);
         return orderList.stream().map(OrderResponse::fromOrder).toList();
     }
+
+    @Override
+    public List<OrderResponse> getOrderByUserId(Long id) throws Exception{
+        List<Order> orderList = orderRepository.findOrderByUserId(id);
+        return orderList.stream().map(OrderResponse::fromOrder).toList();
+    }
 }
