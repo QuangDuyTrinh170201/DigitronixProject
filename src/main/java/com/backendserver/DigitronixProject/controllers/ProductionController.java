@@ -59,6 +59,16 @@ public class ProductionController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduction(@PathVariable Long id){
+        try{
+            productionService.deleteProduction(id);
+            return ResponseEntity.ok("Delete successfully");
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
     @GetMapping("user/{id}")
     public ResponseEntity<?> getProductionWithUserId(@PathVariable Long id){
         try{
