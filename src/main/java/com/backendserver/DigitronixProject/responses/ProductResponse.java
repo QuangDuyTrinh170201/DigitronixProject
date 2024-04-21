@@ -26,6 +26,7 @@ public class ProductResponse extends BaseResponse {
     private Double price;
     private String img;
     private int quantity;
+    private int missing;
 
     @JsonProperty("category_name")
     private String categoryName;
@@ -47,6 +48,7 @@ public class ProductResponse extends BaseResponse {
                     .categoryName(product.getCategory().getName())
                     .img(product.getImg())
                     .quantity(product.getQuantity())
+                    .missing(product.getMissing())
                     .tags(product.getTags().stream()
                             .map(tag -> {
                                 TagMapResponse tagResponse = new TagMapResponse();

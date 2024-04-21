@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Data //toString
 @Getter
@@ -46,6 +47,9 @@ public class OrderDTO {
     @JsonProperty("customer_id")
     @NotBlank(message = "Customer id is required")
     private Long customerId;
+
+    @JsonProperty("order_detail_list")
+    private List<OrderDetailDTO> orderDetailDTOList;
 
     @JsonProperty("created_at")
     private Date createdAt;

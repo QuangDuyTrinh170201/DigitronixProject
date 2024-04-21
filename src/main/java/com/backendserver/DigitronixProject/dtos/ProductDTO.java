@@ -30,6 +30,8 @@ public class ProductDTO {
     @NotNull(message = "Quantity is required")
     private int quantity;
 
+    private int missing;
+
     @JsonProperty("created_at")
     private Date createdAt;
 

@@ -13,12 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.prefix}/orders")
 @RequiredArgsConstructor
-
+@PreAuthorize("hasAnyRole('ROLE_SALE', 'ROLE_DIRECTOR', 'ROLE_PRODUCTION_MANAGER')")
 public class OrderController {
     private final IOrderService orderService;
 
     @GetMapping("")
-    @PreAuthorize("hasAnyRole('ROLE_SALE', 'ROLE_DIRECTOR')")
     public ResponseEntity<?> getAllOrder(){
         try{
             List<OrderResponse> orderResponses = orderService.getAllOrder();
@@ -29,7 +28,6 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SALE', 'ROLE_DIRECTOR')")
     public ResponseEntity<?> getOrderById(@PathVariable Long id){
         try{
             OrderResponse orderResponse = orderService.getOrderById(id);
@@ -40,7 +38,6 @@ public class OrderController {
     }
 
     @PostMapping("")
-    @PreAuthorize("hasAnyRole('ROLE_SALE', 'ROLE_DIRECTOR')")
     public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO){
         try{
             OrderResponse orderResponse = orderService.createOrder(orderDTO);
@@ -51,7 +48,6 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SALE', 'ROLE_DIRECTOR')")
     public ResponseEntity<?> editOrder(@PathVariable Long id, @RequestBody OrderDTO orderDTO){
         try{
             OrderResponse orderResponse = orderService.updateOrder(id, orderDTO);
@@ -62,7 +58,6 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SALE', 'ROLE_DIRECTOR')")
     public ResponseEntity<?> deleteOrder(@PathVariable Long id){
         try{
             orderService.deleteOrder(id);
@@ -73,7 +68,6 @@ public class OrderController {
     }
 
     @GetMapping("/customer/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SALE', 'ROLE_DIRECTOR')")
     public ResponseEntity<?> getOrderByCustomerId(@PathVariable Long id){
         try{
             List<OrderResponse> orderResponse = orderService.getOrderByCustomerId(id);
@@ -84,7 +78,6 @@ public class OrderController {
     }
 
     @GetMapping("/user/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_SALE', 'ROLE_DIRECTOR')")
     public ResponseEntity<?> getOrderByUserId(@PathVariable Long id){
         try{
             List<OrderResponse> orderResponse = orderService.getOrderByUserId(id);

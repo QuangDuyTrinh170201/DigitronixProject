@@ -35,6 +35,9 @@ public class Product extends BaseEntity{
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
+    @Column(name = "missing", nullable = false)
+    private int missing;
+
     @ManyToMany
     @JoinTable(
             name = "product_tags_mapping",

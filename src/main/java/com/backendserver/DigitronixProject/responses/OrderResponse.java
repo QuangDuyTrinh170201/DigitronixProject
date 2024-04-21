@@ -8,7 +8,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
@@ -50,6 +52,8 @@ public class OrderResponse extends BaseResponse{
     @JsonProperty("customer_id")
     private Long customerId;
 
+    private List<OrderDetailResponse> orderDetailResponses;
+
     public static OrderResponse fromOrder(Order order) {
         OrderResponse orderResponse = null;
         orderResponse = OrderResponse.builder()
@@ -62,6 +66,9 @@ public class OrderResponse extends BaseResponse{
                 .status(order.getStatus())
                 .userId(order.getUser().getId())
                 .userName(order.getUser().getUsername())
+                .orderDetailResponses(order.getOrderDetails() != null ?
+                        order.getOrderDetails().stream().map(OrderDetailResponse::fromOrderDetail).toList() :
+                        Collections.emptyList()) // Trả về mảng rỗng nếu processDetails là null
                 .customerId(order.getCustomer().getId())
                 .customerName(order.getCustomer().getName())
                 .build();

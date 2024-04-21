@@ -46,7 +46,11 @@ public class Order extends BaseEntity{
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
+//    @JsonManagedReference
+//    private List<Delivery> deliveries;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Delivery> deliveries;
+    private List<OrderDetail> orderDetails;
 }

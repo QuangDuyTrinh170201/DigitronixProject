@@ -42,6 +42,7 @@ public class ProductService implements IProductService {
         newProduct.setPrice(productDTO.getPrice());
         newProduct.setQuantity(productDTO.getQuantity());
         newProduct.setCategory(existingCategory);
+        newProduct.setMissing(0);
 
         // Lưu sản phẩm mới vào cơ sở dữ liệu
         newProduct = productRepository.save(newProduct);

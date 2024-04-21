@@ -40,9 +40,13 @@ public class ProductionResponse extends BaseResponse{
     @JsonProperty("order_id")
     private Long orderId;
 
+    @JsonProperty("product_name")
+    private String productName;
+
     public static ProductionResponse fromProduction(Production production){
         ProductionResponse response = ProductionResponse.builder()
                 .id(production.getId())
+                .productName(production.getProcess().getProduct().getProductName())
                 .timeStart(production.getTimeStart())
                 .timeEnd(production.getTimeEnd())
                 .quantity(production.getQuantity())
