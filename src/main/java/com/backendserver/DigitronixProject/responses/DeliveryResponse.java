@@ -20,6 +20,8 @@ public class DeliveryResponse extends BaseResponse{
     @JsonProperty("order_id")
     private Long orderId;
 
+    private OrderResponse orderResponse;
+
     @JsonProperty("delivery_date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime deliveryDate;
@@ -30,9 +32,9 @@ public class DeliveryResponse extends BaseResponse{
         DeliveryResponse deliveryResponse = null;
         deliveryResponse = DeliveryResponse.builder()
                 .id(delivery.getId())
-                .orderId(delivery.getOrder().getId())
                 .deliveryDate(delivery.getDeliveryDate())
                 .status(delivery.getStatus())
+                .orderResponse(OrderResponse.fromOrder(delivery.getOrder()))
                 .build();
         deliveryResponse.setCreatedAt(delivery.getCreatedAt());
         deliveryResponse.setUpdatedAt(delivery.getUpdatedAt());

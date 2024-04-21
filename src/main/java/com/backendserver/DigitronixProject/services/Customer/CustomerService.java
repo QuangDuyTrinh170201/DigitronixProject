@@ -52,7 +52,7 @@ public class CustomerService implements ICustomerService {
         findCustomer.setAddress(customerDTO.getAddress());
         findCustomer.setPaymentInfo(customerDTO.getPaymentInfo());
         findCustomer.setFacebook(customerDTO.getFacebook());
-        return CustomerResponse.fromCustomer(findCustomer);
+        return CustomerResponse.fromCustomer(customerRepository.save(findCustomer));
     }
 
     @Override
