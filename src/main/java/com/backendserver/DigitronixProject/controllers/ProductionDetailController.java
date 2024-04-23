@@ -28,9 +28,20 @@ public class ProductionDetailController {
         }
     }
 
-    @GetMapping("/production/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ROLE_DIRECTOR', 'ROLE_PRODUCTION_MANAGER', 'ROLE_WORKER')")
     public ResponseEntity<?> getProductionDetailById(@PathVariable Long id){
+        try{
+            ProductionDetailResponse productionDetailResponse = productionDetailService.getProductionDetailById(id);
+            return ResponseEntity.ok(productionDetailResponse);
+        }catch (Exception ex){
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
+    @GetMapping("/production/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_DIRECTOR', 'ROLE_PRODUCTION_MANAGER', 'ROLE_WORKER')")
+    public ResponseEntity<?> getProductionDetailByProductionId(@PathVariable Long id){
         try{
             ProductionDetailResponse productionDetailResponse = productionDetailService.getProductionDetailById(id);
             return ResponseEntity.ok(productionDetailResponse);

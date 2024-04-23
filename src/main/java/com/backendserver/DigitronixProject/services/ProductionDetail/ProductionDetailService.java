@@ -93,6 +93,7 @@ public class ProductionDetailService implements IProductionDetailService{
         }
         else if(productionDetailDTO.getStatus().equals("done")){
             if(findExistingProcessDetail.getIsFinal().equals(true)){
+                findExistingProduction.setStatus("done");
                 Product existingProduct = productRepository.findById(findExistingProcessDetail.getOutId())
                         .orElseThrow(()->new DataNotFoundException("Cannot find any product matching with this production detail!"));
                 int prodQuantity = existingProduct.getQuantity();
@@ -108,6 +109,14 @@ public class ProductionDetailService implements IProductionDetailService{
             }
             findExistingProductionDetail.setTimeEnd(productionDetailDTO.getTimeEnd());
         }
+
+        List<ProductionDetail> productionDetailList = productionDetailRepository.findAll();
+        for(ProductionDetail productionDetail1 : productionDetailList){
+            if(Objects.equals(productionDetailDTO.getProductionId(), productionDetail1.getProduction().getId()) && Objects.equals(productionDetailDTO.getProcessDetailId(), productionDetail1.getProcessDetail().getId())){
+                throw new DataIntegrityViolationException("Cannot add a production detail with have the same production and process with another production detail!");
+            }
+        }
+
         findExistingProductionDetail.setName(productionDetailDTO.getName());
         findExistingProductionDetail.setStatus(productionDetailDTO.getStatus());
         findExistingProductionDetail.setCost(productionDetailDTO.getCost());
