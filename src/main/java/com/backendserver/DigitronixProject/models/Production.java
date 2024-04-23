@@ -1,9 +1,11 @@
 package com.backendserver.DigitronixProject.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "productions")
@@ -43,4 +45,8 @@ public class Production extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "production", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<ProductionDetail> productionDetails;
 }

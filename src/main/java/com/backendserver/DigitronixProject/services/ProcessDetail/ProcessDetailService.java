@@ -32,13 +32,38 @@ public class ProcessDetailService implements IProcessDetailService {
         return ProcessDetailResponse.fromProcessDetail(findProcessDetail);
     }
 
+//    @Override
+//    public ProcessDetailResponse createProcessDetail(ProcessDetailDTO processDetailDTO) throws Exception {
+//        Process findProcess = processRepository.findById(processDetailDTO.getProcessId()).orElseThrow(() ->  new DataNotFoundException("Cannot find this process!"));
+//        Optional<ProcessDetail> checkProcessDetail = processDetailRepository.findByDetailName(processDetailDTO.getDetailName());
+//        if(checkProcessDetail.isPresent()){
+//            throw new Exception("This process detail is existed in application!");
+//        }
+//        ProcessDetail newProcessDetail = new ProcessDetail();
+//        newProcessDetail.setDetailName(processDetailDTO.getDetailName());
+//        newProcessDetail.setIntensity(processDetailDTO.getIntensity());
+//        newProcessDetail.setProcess(findProcess);
+//        newProcessDetail.setIsFinal(processDetailDTO.getIsFinal());
+//        newProcessDetail.setInMaterialId(processDetailDTO.getInMaterialId());
+//        newProcessDetail.setOutId(processDetailDTO.getOutId());
+//
+//        newProcessDetail = processDetailRepository.save(newProcessDetail);
+//        return ProcessDetailResponse.fromProcessDetail(newProcessDetail);
+//    }
+
     @Override
     public ProcessDetailResponse createProcessDetail(ProcessDetailDTO processDetailDTO) throws Exception {
-        Process findProcess = processRepository.findById(processDetailDTO.getProcessId()).orElseThrow(() ->  new DataNotFoundException("Cannot find this process!"));
+        // Tìm process dựa trên processId
+        Process findProcess = processRepository.findById(processDetailDTO.getProcessId())
+                .orElseThrow(() -> new DataNotFoundException("Cannot find this process!"));
+
+        // Kiểm tra xem process detail đã tồn tại chưa
         Optional<ProcessDetail> checkProcessDetail = processDetailRepository.findByDetailName(processDetailDTO.getDetailName());
-        if(checkProcessDetail.isPresent()){
-            throw new Exception("This process detail is existed in application!");
+        if (checkProcessDetail.isPresent()) {
+            throw new Exception("This process detail already exists in the application!");
         }
+
+        // Tạo một ProcessDetail mới
         ProcessDetail newProcessDetail = new ProcessDetail();
         newProcessDetail.setDetailName(processDetailDTO.getDetailName());
         newProcessDetail.setIntensity(processDetailDTO.getIntensity());
@@ -47,7 +72,33 @@ public class ProcessDetailService implements IProcessDetailService {
         newProcessDetail.setInMaterialId(processDetailDTO.getInMaterialId());
         newProcessDetail.setOutId(processDetailDTO.getOutId());
 
+        // Lưu ProcessDetail mới vào cơ sở dữ liệu
         newProcessDetail = processDetailRepository.save(newProcessDetail);
+
+        // Duyệt qua tất cả các ProcessDetail thuộc cùng process để cập nhật isFinal
+        List<ProcessDetail> allProcessDetails = processDetailRepository.findProcessDetailByProcessId(findProcess.getId());
+        int maxIntensity = Math.toIntExact(processDetailDTO.getIntensity()); // Giả sử intensity của process detail mới là lớn nhất
+
+        for (ProcessDetail processDetail : allProcessDetails) {
+            if (processDetail.getIntensity() != null) {
+                if (processDetail.getIntensity() > maxIntensity) {
+                    maxIntensity = Math.toIntExact(processDetail.getIntensity());
+                }
+            }
+        }
+
+        // Duyệt qua lại để cập nhật isFinal
+        for (ProcessDetail processDetail : allProcessDetails) {
+            if (processDetail.getIntensity() != null) {
+                if (processDetail.getIntensity() == maxIntensity) {
+                    processDetail.setIsFinal(true);
+                } else {
+                    processDetail.setIsFinal(false);
+                }
+                processDetailRepository.save(processDetail);
+            }
+        }
+
         return ProcessDetailResponse.fromProcessDetail(newProcessDetail);
     }
 

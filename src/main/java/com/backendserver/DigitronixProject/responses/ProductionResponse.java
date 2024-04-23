@@ -7,7 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -43,6 +45,9 @@ public class ProductionResponse extends BaseResponse{
     @JsonProperty("product_name")
     private String productName;
 
+    @JsonProperty("production_detail")
+    private List<ProductionDetailResponse> productionDetailResponseList;
+
     public static ProductionResponse fromProduction(Production production){
         ProductionResponse response = ProductionResponse.builder()
                 .id(production.getId())
@@ -54,6 +59,9 @@ public class ProductionResponse extends BaseResponse{
                 .totalCost(production.getTotalCost())
                 .userId(production.getUser().getId())
                 .processId(production.getProcess().getId())
+                .productionDetailResponseList(production.getProductionDetails() != null ?
+                        production.getProductionDetails().stream().map(ProductionDetailResponse::fromProductionDetail).toList() :
+                        Collections.emptyList())
                 .orderId(production.getOrder().getId())
                 .build();
 

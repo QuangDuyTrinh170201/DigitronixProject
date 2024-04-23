@@ -52,6 +52,8 @@ public class OrderResponse extends BaseResponse{
     @JsonProperty("customer_id")
     private Long customerId;
 
+    private String customerAddress;
+
     private List<OrderDetailResponse> orderDetailResponses;
 
     public static OrderResponse fromOrder(Order order) {
@@ -71,6 +73,7 @@ public class OrderResponse extends BaseResponse{
                         Collections.emptyList()) // Trả về mảng rỗng nếu processDetails là null
                 .customerId(order.getCustomer().getId())
                 .customerName(order.getCustomer().getName())
+                .customerAddress(order.getCustomer().getAddress())
                 .build();
         orderResponse.setCreatedAt(order.getCreatedAt());
         orderResponse.setUpdatedAt(order.getUpdatedAt());

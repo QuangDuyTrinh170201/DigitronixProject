@@ -75,7 +75,9 @@ public class UserService implements IUserService {
         // Prepare the response map
         Map<String, Object> response = new HashMap<>();
         response.put("token", jwtTokenUtil.generateToken(existingUser));
-        response.put("roleId", existingUser.getRole().getId()); // Assuming Role is a field in User entity
+        response.put("roleId", existingUser.getRole().getId());
+        response.put("username", existingUser.getUsername());
+        response.put("userId", existingUser.getId());// Assuming Role is a field in User entity
 
         return response;
     }
