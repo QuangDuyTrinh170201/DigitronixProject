@@ -12,4 +12,7 @@ public interface ProductionDetailRepository extends JpaRepository<ProductionDeta
 
     @Query("SELECT p FROM ProductionDetail p WHERE p.production.id = :productionId")
     List<ProductionDetail> findProductionDetailByProductionId(@Param("productionId") Long productionId);
+
+    @Query("SELECT p FROM ProductionDetail p WHERE p.user.id = :userId")
+    List<ProductionDetail> findProductionDetailByUserId(@Param("userId") Long userId);
 }

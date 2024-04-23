@@ -1,5 +1,6 @@
 package com.backendserver.DigitronixProject.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -41,6 +42,7 @@ public class ProductionDetail {
     private ProcessDetail processDetail;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinColumn(name = "production_id")
     private Production production;
 

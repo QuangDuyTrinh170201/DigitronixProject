@@ -11,6 +11,8 @@ public interface IProductionDetailService {
 
     ProductionDetailResponse getProductionDetailById(Long id) throws Exception;
 
+    List<ProductionDetailResponse> getProductionDetailByUserId(Long id) throws Exception;
+
     ProductionDetailResponse createProductionDetail(ProductionDetailDTO productionDetailDTO) throws Exception;
 
     ProductionDetailResponse editProductionDetail(Long id, ProductionDetailDTO productionDetailDTO) throws DataNotFoundException;

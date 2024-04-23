@@ -1,5 +1,6 @@
 package com.backendserver.DigitronixProject.dtos;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -17,9 +18,11 @@ public class ProductionDetailDTO {
     private String name;
 
     @JsonProperty("time_start")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timeStart;
 
     @JsonProperty("time_end")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timeEnd;
 
     private String status;

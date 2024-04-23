@@ -35,6 +35,12 @@ public class ProductionDetailService implements IProductionDetailService{
     }
 
     @Override
+    public List<ProductionDetailResponse> getProductionDetailByUserId(Long id) throws Exception{
+        List<ProductionDetail> productionDetail = productionDetailRepository.findProductionDetailByUserId(id);
+        return productionDetail.stream().map(ProductionDetailResponse::fromProductionDetail).toList();
+    }
+
+    @Override
     public ProductionDetailResponse createProductionDetail(ProductionDetailDTO productionDetailDTO) throws Exception {
         ProcessDetail findExistingProcessDetail = processDetailRepository.findById(productionDetailDTO.getProcessDetailId())
                 .orElseThrow(()-> new DataNotFoundException("Cannot find this process in application!"));
@@ -113,6 +119,8 @@ public class ProductionDetailService implements IProductionDetailService{
 
     @Override
     public void deleteProductionDetail(Long id) throws Exception {
-
+        ProductionDetail productionDetail = productionDetailRepository.findById(id)
+                .orElseThrow(()->new DataNotFoundException("Cannot find this production detail"));
+        productionDetailRepository.delete(productionDetail);
     }
 }
