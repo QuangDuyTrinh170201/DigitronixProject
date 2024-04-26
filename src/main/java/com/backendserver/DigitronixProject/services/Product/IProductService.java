@@ -1,6 +1,7 @@
 package com.backendserver.DigitronixProject.services.Product;
 
 import com.backendserver.DigitronixProject.dtos.ProductDTO;
+import com.backendserver.DigitronixProject.dtos.ProductUpdateDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Product;
 import com.backendserver.DigitronixProject.responses.ProductResponse;
@@ -17,7 +18,7 @@ public interface IProductService {
     Page<ProductResponse> getAllProducts(String keyword, Long categoryId, PageRequest pageRequest);
     Product addTagToProduct(Long productId, Long tagId);
     String deleteProduct(Long productId) throws DataNotFoundException;
-    ProductResponse updateProduct(Long id, ProductDTO productDTO) throws DataNotFoundException;
+    ProductResponse updateProduct(Long id, ProductUpdateDTO productDTO) throws DataNotFoundException;
     Product getProductById(long productId) throws Exception;
     List<ProductResponse> getAllProductNoPaging() throws DataNotFoundException;
 }

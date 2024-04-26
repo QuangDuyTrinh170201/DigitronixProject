@@ -25,8 +25,9 @@ public class ProcessDetail extends BaseEntity{
     @Column(name = "is_final")
     private Boolean isFinal;
 
-    @Column(name = "in_material_id", nullable = false)
-    private Long inMaterialId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "in_material_id", nullable = false)
+    private Material material;
 
     @Column(name = "out_id", nullable = false)
     private Long outId;

@@ -25,4 +25,6 @@ public interface IMaterialService {
     Material updateMaterialImage(Long materialId, String fileName) throws DataNotFoundException;
 
     MaterialResponse getMaterialWithId(Long id) throws DataNotFoundException;
+
+    public String getMaterialNameById(Long id) throws Exception;
 }

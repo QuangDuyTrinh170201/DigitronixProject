@@ -61,7 +61,7 @@ public class ProductionDetailService implements IProductionDetailService{
             }
         }
         float varProductionDetailCost;
-        Material getMaterialPrice = materialRepository.findById(findExistingProcessDetail.getInMaterialId())
+        Material getMaterialPrice = materialRepository.findById(findExistingProcessDetail.getMaterial().getId())
                 .orElseThrow(()->new DataNotFoundException("Cannot find this material in system!"));
         Double priceOfMaterial = getMaterialPrice.getPrice();
         varProductionDetailCost = (float) (priceOfMaterial * productionDetailDTO.getInMaterialQuantity());
@@ -108,13 +108,6 @@ public class ProductionDetailService implements IProductionDetailService{
                 }
             }
             findExistingProductionDetail.setTimeEnd(productionDetailDTO.getTimeEnd());
-        }
-
-        List<ProductionDetail> productionDetailList = productionDetailRepository.findAll();
-        for(ProductionDetail productionDetail1 : productionDetailList){
-            if(Objects.equals(productionDetailDTO.getProductionId(), productionDetail1.getProduction().getId()) && Objects.equals(productionDetailDTO.getProcessDetailId(), productionDetail1.getProcessDetail().getId())){
-                throw new DataIntegrityViolationException("Cannot add a production detail with have the same production and process with another production detail!");
-            }
         }
 
         findExistingProductionDetail.setName(productionDetailDTO.getName());

@@ -3,12 +3,15 @@ package com.backendserver.DigitronixProject.services.ProcessDetail;
 import com.backendserver.DigitronixProject.dtos.HandleProcessDetailDTO;
 import com.backendserver.DigitronixProject.dtos.ProcessDetailDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
+import com.backendserver.DigitronixProject.models.Material;
 import com.backendserver.DigitronixProject.models.Process;
 import com.backendserver.DigitronixProject.models.ProcessDetail;
+import com.backendserver.DigitronixProject.repositories.MaterialRepository;
 import com.backendserver.DigitronixProject.repositories.ProcessDetailRepository;
 import com.backendserver.DigitronixProject.repositories.ProcessRepository;
 import com.backendserver.DigitronixProject.responses.ProcessDetailResponse;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +22,9 @@ import java.util.Optional;
 public class ProcessDetailService implements IProcessDetailService {
     private final ProcessDetailRepository processDetailRepository;
     private final ProcessRepository processRepository;
+    private final MaterialRepository materialRepository;
 
+    @SneakyThrows
     @Override
     public List<ProcessDetailResponse> getAllProcessDetail() throws Exception {
         List<ProcessDetail> processDetailList = processDetailRepository.findAll();
@@ -56,6 +61,8 @@ public class ProcessDetailService implements IProcessDetailService {
         // Tìm process dựa trên processId
         Process findProcess = processRepository.findById(processDetailDTO.getProcessId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find this process!"));
+        Material findExistingMaterial = materialRepository.findById(processDetailDTO.getInMaterialId())
+                .orElseThrow(()->new DataNotFoundException("Cannot find this material in system!"));
 
         // Kiểm tra xem process detail đã tồn tại chưa
         Optional<ProcessDetail> checkProcessDetail = processDetailRepository.findByDetailName(processDetailDTO.getDetailName());
@@ -69,7 +76,7 @@ public class ProcessDetailService implements IProcessDetailService {
         newProcessDetail.setIntensity(processDetailDTO.getIntensity());
         newProcessDetail.setProcess(findProcess);
         newProcessDetail.setIsFinal(processDetailDTO.getIsFinal());
-        newProcessDetail.setInMaterialId(processDetailDTO.getInMaterialId());
+        newProcessDetail.setMaterial(findExistingMaterial);
         newProcessDetail.setOutId(processDetailDTO.getOutId());
 
         // Lưu ProcessDetail mới vào cơ sở dữ liệu
@@ -107,11 +114,14 @@ public class ProcessDetailService implements IProcessDetailService {
         ProcessDetail checkExistingProcessDetail = processDetailRepository.getReferenceById(id);
         Process checkProcess = processRepository.findById(processDetailDTO.getProcessId()).orElseThrow(() -> new DataNotFoundException("Cannot find this process"));
 
+        Material findExistingMaterial = materialRepository.findById(processDetailDTO.getInMaterialId())
+                .orElseThrow(()->new DataNotFoundException("Cannot find this material in system!"));
+
         checkExistingProcessDetail.setDetailName(processDetailDTO.getDetailName());
         checkExistingProcessDetail.setIntensity(processDetailDTO.getIntensity());
         checkExistingProcessDetail.setProcess(checkProcess);
         checkExistingProcessDetail.setIsFinal(processDetailDTO.getIsFinal());
-        checkExistingProcessDetail.setInMaterialId(processDetailDTO.getInMaterialId());
+        checkExistingProcessDetail.setMaterial(findExistingMaterial);
         checkExistingProcessDetail.setOutId(processDetailDTO.getOutId());
         processDetailRepository.save(checkExistingProcessDetail);
         return ProcessDetailResponse.fromProcessDetail(checkExistingProcessDetail);

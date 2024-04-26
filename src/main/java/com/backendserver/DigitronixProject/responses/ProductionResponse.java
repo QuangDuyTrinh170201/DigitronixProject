@@ -45,6 +45,9 @@ public class ProductionResponse extends BaseResponse{
     @JsonProperty("product_name")
     private String productName;
 
+    @JsonProperty("user_name")
+    private String userName;
+
     @JsonProperty("production_detail")
     private List<ProductionDetailResponse> productionDetailResponseList;
 
@@ -58,6 +61,7 @@ public class ProductionResponse extends BaseResponse{
                 .status(production.getStatus())
                 .totalCost(production.getTotalCost())
                 .userId(production.getUser().getId())
+                .userName(production.getUser().getUsername())
                 .processId(production.getProcess().getId())
                 .productionDetailResponseList(production.getProductionDetails() != null ?
                         production.getProductionDetails().stream().map(ProductionDetailResponse::fromProductionDetail).toList() :

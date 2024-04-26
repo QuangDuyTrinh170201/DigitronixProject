@@ -1,6 +1,7 @@
 package com.backendserver.DigitronixProject.services.Product;
 
 import com.backendserver.DigitronixProject.dtos.ProductDTO;
+import com.backendserver.DigitronixProject.dtos.ProductUpdateDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Category;
 import com.backendserver.DigitronixProject.models.Product;
@@ -119,22 +120,42 @@ public class ProductService implements IProductService {
 
     @Override
     @Transactional
-    public ProductResponse updateProduct(Long id, ProductDTO productDTO) throws DataNotFoundException{
+    public ProductResponse updateProduct(Long id, ProductUpdateDTO productDTO) throws DataNotFoundException{
         Product existingProduct = productRepository.getById(id);
-
-        Category existingCategory = categoryRepository
-                .findById(productDTO.getCategoryId())
-                .orElseThrow(() -> new DataNotFoundException("Cannot find the category of this product with id " +productDTO.getCategoryId()));
 
         String oldImage = existingProduct.getImg();
         existingProduct.setProductName(productDTO.getProductName());
-        existingProduct.setPrice(productDTO.getPrice());
-        existingProduct.setCategory(existingCategory);
-        existingProduct.setImg(oldImage);
-        existingProduct.setQuantity(productDTO.getQuantity());
+        if(productDTO.getPrice() != null){
+            existingProduct.setPrice(productDTO.getPrice());
+        }
+        if(productDTO.getCategoryId() != null){
+            Category existingCategory = categoryRepository
+                    .findById(productDTO.getCategoryId())
+                    .orElseThrow(() -> new DataNotFoundException("Cannot find the category of this product with id " +productDTO.getCategoryId()));
+            existingProduct.setCategory(existingCategory);
+        }
+        if(productDTO.getImg() != null){
+            existingProduct.setImg(oldImage);
+        }
+        if(existingProduct.getMissing() < 0){
+            int quantityBeforeInput = productDTO.getQuantity();
+            int missingBeforeInput = existingProduct.getMissing();
+            int quantityAfterInput = quantityBeforeInput + missingBeforeInput;
+            if(quantityAfterInput < 0){
+                existingProduct.setMissing(quantityAfterInput);
+                existingProduct.setQuantity(0);
+            }else if(quantityAfterInput > 0){
+                existingProduct.setQuantity(quantityAfterInput);
+                existingProduct.setMissing(0);
+            }else{
+                existingProduct.setMissing(0);
+                existingProduct.setQuantity(0);
+            }
+        }
         productRepository.save(existingProduct);
         return ProductResponse.fromProduct(existingProduct);
     }
+
 
     @Override
     public Product getProductById(long productId) throws Exception {

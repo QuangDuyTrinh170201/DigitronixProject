@@ -42,6 +42,12 @@ public class MaterialService implements IMaterialService {
     }
 
     @Override
+    public String getMaterialNameById(Long id){
+        Material getName = materialRepository.getReferenceById(id);
+        return getName.getName();
+    }
+
+    @Override
     public Page<MaterialResponse> getAllMaterialWithPaging(String keyword, Long categoryId, PageRequest pageRequest) throws Exception {
 
         Page<Material> materialPage;

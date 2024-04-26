@@ -1,6 +1,7 @@
 package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.dtos.ProductDTO;
+import com.backendserver.DigitronixProject.dtos.ProductUpdateDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Product;
 import com.backendserver.DigitronixProject.responses.ProductListResponse;
@@ -152,7 +153,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_DIRECTOR')")
-    public ResponseEntity<?> updateProduct(@PathVariable long id, @RequestBody ProductDTO productDTO){
+    public ResponseEntity<?> updateProduct(@PathVariable long id, @RequestBody ProductUpdateDTO productDTO){
         try{
             ProductResponse updatedProduct = productService.updateProduct(id, productDTO);
             return ResponseEntity.ok(updatedProduct);
