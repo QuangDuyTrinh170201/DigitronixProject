@@ -48,6 +48,9 @@ public class ProductionResponse extends BaseResponse{
     @JsonProperty("user_name")
     private String userName;
 
+    @JsonProperty("order_deadline")
+    private LocalDateTime orderDeadline;
+
     @JsonProperty("production_detail")
     private List<ProductionDetailResponse> productionDetailResponseList;
 
@@ -67,6 +70,7 @@ public class ProductionResponse extends BaseResponse{
                         production.getProductionDetails().stream().map(ProductionDetailResponse::fromProductionDetail).toList() :
                         Collections.emptyList())
                 .orderId(production.getOrder().getId())
+                .orderDeadline(production.getOrder().getDeadline())
                 .build();
 
         response.setCreatedAt(production.getCreatedAt());

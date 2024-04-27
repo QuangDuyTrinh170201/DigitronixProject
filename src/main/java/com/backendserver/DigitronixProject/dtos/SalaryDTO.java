@@ -27,9 +27,7 @@ public class SalaryDTO {
     private int minKpi;
 
     @JsonProperty("rate_sa")
-    @NotBlank(message = "Rate salary is required")
     private float rateSa;
 
-    @NotBlank(message = "Total is required")
     private double total;
 }

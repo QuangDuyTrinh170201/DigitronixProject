@@ -48,6 +48,8 @@ public class ProductionDetailResponse {
                 .timeEnd(productionDetail.getTimeEnd())
                 .status(productionDetail.getStatus())
                 .cost(productionDetail.getCost())
+                .inMaterialQuantity(productionDetail.getInMaterialQuantity())
+                .outQuantity(productionDetail.getOutQuantity())
                 .processDetailId(productionDetail.getProcessDetail().getId())
                 .userId(productionDetail.getUser().getId())
                 .productionId(productionDetail.getProduction().getId())

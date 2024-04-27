@@ -88,7 +88,15 @@ public class ProductionDetailService implements IProductionDetailService{
                 .orElseThrow(()-> new DataNotFoundException("Cannot find this production in application!"));
         User findExistingUser = userRepository.findById(productionDetailDTO.getUserId())
                 .orElseThrow(()->new DataNotFoundException("Cannot find this user in application!"));
-        if(productionDetailDTO.getStatus().equals("pending")){
+        List<ProductionDetail> productionDetailList = productionDetailRepository.findAll();
+        for(ProductionDetail productionDetail1 : productionDetailList){
+            if(productionDetail1 != findExistingProductionDetail){
+                if(Objects.equals(productionDetailDTO.getProductionId(), productionDetail1.getProduction().getId()) && Objects.equals(productionDetailDTO.getProcessDetailId(), productionDetail1.getProcessDetail().getId())){
+                    throw new DataIntegrityViolationException("Cannot add a production detail with have the same production and process with another production detail!");
+                }
+            }
+        }
+        if(productionDetailDTO.getStatus().equals("processing")){
             findExistingProductionDetail.setTimeStart(productionDetailDTO.getTimeStart());
         }
         else if(productionDetailDTO.getStatus().equals("done")){
@@ -108,6 +116,9 @@ public class ProductionDetailService implements IProductionDetailService{
                 }
             }
             findExistingProductionDetail.setTimeEnd(productionDetailDTO.getTimeEnd());
+        }else if(productionDetailDTO.getStatus().equals("todo")){
+            findExistingProductionDetail.setInMaterialQuantity(productionDetailDTO.getInMaterialQuantity());
+            findExistingProductionDetail.setOutQuantity(productionDetailDTO.getOutQuantity());
         }
 
         findExistingProductionDetail.setName(productionDetailDTO.getName());
