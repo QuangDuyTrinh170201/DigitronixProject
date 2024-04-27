@@ -99,7 +99,7 @@ public class SalaryController {
         }
     }
 
-    @PostMapping("/timekepping")
+    @GetMapping("/timekeeping")
     public ResponseEntity<?> timekeepingAllSalaryReport(){
         try{
             salaryService.timekeepingAll();
