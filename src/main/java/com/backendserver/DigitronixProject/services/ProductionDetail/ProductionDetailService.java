@@ -76,6 +76,14 @@ public class ProductionDetailService implements IProductionDetailService{
         newProductionDetail.setInMaterialQuantity(productionDetailDTO.getInMaterialQuantity());
         newProductionDetail.setOutQuantity(productionDetailDTO.getOutQuantity());
         newProductionDetail = productionDetailRepository.save(newProductionDetail);
+
+        Float totalCost = 0f;
+        List<ProductionDetail> productionDetailList1 = productionDetailRepository.findProductionDetailByProductionId(findExistingProduction.getId());
+        for(ProductionDetail productionDetail : productionDetailList1){
+            totalCost += productionDetail.getCost();
+        }
+        findExistingProduction.setTotalCost(Double.valueOf(totalCost));
+        productionRepository.save(findExistingProduction);
         return ProductionDetailResponse.fromProductionDetail(newProductionDetail);
     }
 

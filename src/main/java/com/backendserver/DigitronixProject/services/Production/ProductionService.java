@@ -2,14 +2,9 @@ package com.backendserver.DigitronixProject.services.Production;
 
 import com.backendserver.DigitronixProject.dtos.ProductionDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
-import com.backendserver.DigitronixProject.models.Order;
+import com.backendserver.DigitronixProject.models.*;
 import com.backendserver.DigitronixProject.models.Process;
-import com.backendserver.DigitronixProject.models.Production;
-import com.backendserver.DigitronixProject.models.User;
-import com.backendserver.DigitronixProject.repositories.OrderRepository;
-import com.backendserver.DigitronixProject.repositories.ProcessRepository;
-import com.backendserver.DigitronixProject.repositories.ProductionRepository;
-import com.backendserver.DigitronixProject.repositories.UserRepository;
+import com.backendserver.DigitronixProject.repositories.*;
 import com.backendserver.DigitronixProject.responses.ProductionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +18,7 @@ public class ProductionService implements IProductionService{
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final ProcessRepository processRepository;
+    private final ProductionDetailRepository productionDetailRepository;
 
     @Override
     public List<ProductionResponse> getAllProduction() throws Exception {

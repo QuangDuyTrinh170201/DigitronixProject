@@ -39,6 +39,9 @@ public class ProductionDetailResponse {
     @JsonProperty("production_id")
     private Long productionId;
 
+    @JsonProperty("material_name")
+    private String materialName;
+
     public static ProductionDetailResponse fromProductionDetail(ProductionDetail productionDetail) {
 
         return ProductionDetailResponse.builder()
@@ -51,6 +54,7 @@ public class ProductionDetailResponse {
                 .inMaterialQuantity(productionDetail.getInMaterialQuantity())
                 .outQuantity(productionDetail.getOutQuantity())
                 .processDetailId(productionDetail.getProcessDetail().getId())
+                .materialName(productionDetail.getProcessDetail().getMaterial().getName())
                 .userId(productionDetail.getUser().getId())
                 .productionId(productionDetail.getProduction().getId())
                 .build();
