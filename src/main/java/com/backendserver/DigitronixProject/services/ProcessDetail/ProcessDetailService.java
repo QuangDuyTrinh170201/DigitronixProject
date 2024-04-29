@@ -37,24 +37,6 @@ public class ProcessDetailService implements IProcessDetailService {
         return ProcessDetailResponse.fromProcessDetail(findProcessDetail);
     }
 
-//    @Override
-//    public ProcessDetailResponse createProcessDetail(ProcessDetailDTO processDetailDTO) throws Exception {
-//        Process findProcess = processRepository.findById(processDetailDTO.getProcessId()).orElseThrow(() ->  new DataNotFoundException("Cannot find this process!"));
-//        Optional<ProcessDetail> checkProcessDetail = processDetailRepository.findByDetailName(processDetailDTO.getDetailName());
-//        if(checkProcessDetail.isPresent()){
-//            throw new Exception("This process detail is existed in application!");
-//        }
-//        ProcessDetail newProcessDetail = new ProcessDetail();
-//        newProcessDetail.setDetailName(processDetailDTO.getDetailName());
-//        newProcessDetail.setIntensity(processDetailDTO.getIntensity());
-//        newProcessDetail.setProcess(findProcess);
-//        newProcessDetail.setIsFinal(processDetailDTO.getIsFinal());
-//        newProcessDetail.setInMaterialId(processDetailDTO.getInMaterialId());
-//        newProcessDetail.setOutId(processDetailDTO.getOutId());
-//
-//        newProcessDetail = processDetailRepository.save(newProcessDetail);
-//        return ProcessDetailResponse.fromProcessDetail(newProcessDetail);
-//    }
 
     @Override
     public ProcessDetailResponse createProcessDetail(ProcessDetailDTO processDetailDTO) throws Exception {
