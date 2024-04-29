@@ -3,8 +3,10 @@ package com.backendserver.DigitronixProject.services.ProductionDetail;
 import com.backendserver.DigitronixProject.dtos.ProductionDetailDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.*;
+import com.backendserver.DigitronixProject.models.Process;
 import com.backendserver.DigitronixProject.repositories.*;
 import com.backendserver.DigitronixProject.responses.ProductionDetailResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ public class ProductionDetailService implements IProductionDetailService{
     private final UserRepository userRepository;
     private final MaterialRepository materialRepository;
     private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
+
     @Override
     public List<ProductionDetailResponse> getAllProductionDetail() {
         List<ProductionDetail> productionDetails = productionDetailRepository.findAll();
@@ -88,12 +92,14 @@ public class ProductionDetailService implements IProductionDetailService{
     }
 
     @Override
+    @Transactional
     public ProductionDetailResponse editProductionDetail(Long id, ProductionDetailDTO productionDetailDTO) throws DataNotFoundException {
         ProductionDetail findExistingProductionDetail = productionDetailRepository.findById(id).orElseThrow(()->new DataNotFoundException("Cannot find production detail in system!"));
         ProcessDetail findExistingProcessDetail = processDetailRepository.findById(productionDetailDTO.getProcessDetailId())
                 .orElseThrow(()-> new DataNotFoundException("Cannot find this process in application!"));
         Production findExistingProduction = productionRepository.findById(productionDetailDTO.getProductionId())
                 .orElseThrow(()-> new DataNotFoundException("Cannot find this production in application!"));
+        List<ProcessDetail> processDetailList = processDetailRepository.findProcessDetailByProcessId(findExistingProduction.getProcess().getId());
         User findExistingUser = userRepository.findById(productionDetailDTO.getUserId())
                 .orElseThrow(()->new DataNotFoundException("Cannot find this user in application!"));
         List<ProductionDetail> productionDetailList = productionDetailRepository.findAll();
@@ -104,8 +110,24 @@ public class ProductionDetailService implements IProductionDetailService{
                 }
             }
         }
-        if(productionDetailDTO.getStatus().equals("processing")){
+        if (productionDetailDTO.getStatus().equals("processing")) {
             findExistingProductionDetail.setTimeStart(productionDetailDTO.getTimeStart());
+            Long minIntensity = Long.MAX_VALUE; // Khởi tạo giá trị ban đầu là giá trị lớn nhất của Long
+
+            for (ProcessDetail processDetail : processDetailList) {
+                Long intensity = processDetail.getIntensity();
+                if (intensity < minIntensity) {
+                    minIntensity = intensity; // Cập nhật giá trị nhỏ nhất
+                }
+            }
+            if(Objects.equals(findExistingProductionDetail.getProcessDetail().getIntensity(), minIntensity)){
+                findExistingProduction.setStatus("pending");
+                productionRepository.save(findExistingProduction);
+                Order findOrder = orderRepository.findById(findExistingProduction.getOrder().getId())
+                        .orElseThrow(()->new DataNotFoundException("Cannot find order with this production!"));
+                findOrder.setStatus("on_produce");
+                orderRepository.save(findOrder);
+            }
         }
         else if(productionDetailDTO.getStatus().equals("done")){
             if(findExistingProcessDetail.getIsFinal().equals(true)){
