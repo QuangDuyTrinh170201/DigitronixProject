@@ -22,6 +22,9 @@ public class OrderDetailResponse extends BaseResponse{
     @JsonProperty("product_name")
     private String productName;
 
+    @JsonProperty("product_image")
+    private String productImage;
+
     private Long quantity;
 
     public static OrderDetailResponse fromOrderDetail(OrderDetail orderDetail) {
@@ -32,6 +35,7 @@ public class OrderDetailResponse extends BaseResponse{
                 .productId(orderDetail.getProduct().getId())
                 .productName(orderDetail.getProduct().getProductName())
                 .quantity(orderDetail.getQuantity())
+                .productImage(orderDetail.getProduct().getImg())
                 .build();
         orderDetailResponse.setCreatedAt(orderDetail.getCreatedAt());
         orderDetailResponse.setUpdatedAt(orderDetail.getUpdatedAt());
