@@ -17,9 +17,6 @@ import java.time.LocalDateTime;
 public class DeliveryResponse extends BaseResponse{
     private Long id;
 
-    @JsonProperty("order_id")
-    private Long orderId;
-
     private OrderResponse orderResponse;
 
     @JsonProperty("delivery_date")
