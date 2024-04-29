@@ -56,6 +56,8 @@ public class OrderResponse extends BaseResponse{
 
     private List<OrderDetailResponse> orderDetailResponses;
 
+    private String customerPhone;
+
     public static OrderResponse fromOrder(Order order) {
         OrderResponse orderResponse = null;
         orderResponse = OrderResponse.builder()
@@ -74,6 +76,7 @@ public class OrderResponse extends BaseResponse{
                 .customerId(order.getCustomer().getId())
                 .customerName(order.getCustomer().getName())
                 .customerAddress(order.getCustomer().getAddress())
+                .customerPhone(order.getCustomer().getPhone())
                 .build();
         orderResponse.setCreatedAt(order.getCreatedAt());
         orderResponse.setUpdatedAt(order.getUpdatedAt());
