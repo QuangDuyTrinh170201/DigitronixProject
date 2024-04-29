@@ -51,7 +51,7 @@ public class DeliveryController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_DIRECTOR', 'ROLE_DRIVER')")
+    @PreAuthorize("hasAnyRole('ROLE_DIRECTOR', 'ROLE_DRIVER')")
     public ResponseEntity<?> editDelivery(@PathVariable Long id, @RequestBody DeliveryDTO deliveryDTO){
         try{
             DeliveryResponse deliveryResponse = deliveryService.updateDelivery(id, deliveryDTO);
