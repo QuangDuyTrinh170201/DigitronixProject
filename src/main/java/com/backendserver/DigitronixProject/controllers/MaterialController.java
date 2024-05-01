@@ -1,6 +1,7 @@
 package com.backendserver.DigitronixProject.controllers;
 
 import com.backendserver.DigitronixProject.dtos.MaterialDTO;
+import com.backendserver.DigitronixProject.dtos.UpdateMaterialDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Material;
 import com.backendserver.DigitronixProject.repositories.MaterialRepository;
@@ -91,7 +92,7 @@ public class MaterialController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_DIRECTOR')")
-    public ResponseEntity<?> updateMaterials(@PathVariable Long id, @RequestBody MaterialDTO materialDTO){
+    public ResponseEntity<?> updateMaterials(@PathVariable Long id, @RequestBody UpdateMaterialDTO materialDTO){
         try{
             MaterialResponse updateMaterial = materialService.updateMaterial(id, materialDTO);
             return ResponseEntity.ok(updateMaterial);
