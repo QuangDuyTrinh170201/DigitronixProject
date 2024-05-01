@@ -1,6 +1,7 @@
 package com.backendserver.DigitronixProject.services.Material;
 
 import com.backendserver.DigitronixProject.dtos.MaterialDTO;
+import com.backendserver.DigitronixProject.dtos.UpdateMaterialDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Material;
 import com.backendserver.DigitronixProject.models.MaterialCategory;
@@ -88,17 +89,25 @@ public class MaterialService implements IMaterialService {
 
     @Override
     @Transactional
-    public MaterialResponse updateMaterial(Long id, MaterialDTO materialDTO) throws DataNotFoundException {
+    public MaterialResponse updateMaterial(Long id, UpdateMaterialDTO materialDTO) throws DataNotFoundException {
         Material findExistMaterial = materialRepository.getReferenceById(id);
-        Optional<MaterialCategory> existingCat = materialCategoryRepository.findById(materialDTO.getCategoryId());
-        if(existingCat.isEmpty()){
-            throw new DataNotFoundException("Cannot find this category!");
+        if(materialDTO.getCategoryId() != null){
+            Optional<MaterialCategory> existingCat = materialCategoryRepository.findById(materialDTO.getCategoryId());
+            if(existingCat.isEmpty()){
+                throw new DataNotFoundException("Cannot find this category!");
+            }
+            findExistMaterial.setCategory(existingCat.get());
+        }
+        if(materialDTO.getName() != null){
+            findExistMaterial.setName(materialDTO.getName());
+        }
+        if(materialDTO.getQuantity()!=null){
+            findExistMaterial.setQuantity(materialDTO.getQuantity());
+        }
+        if(materialDTO.getPrice()!=null){
+            findExistMaterial.setPrice(materialDTO.getPrice());
         }
         String oldImage = findExistMaterial.getImage();
-        findExistMaterial.setCategory(existingCat.get());
-        findExistMaterial.setName(materialDTO.getName());
-        findExistMaterial.setQuantity(materialDTO.getQuantity());
-        findExistMaterial.setPrice(materialDTO.getPrice());
         findExistMaterial.setImage(oldImage);
         return MaterialResponse.fromMaterial(materialRepository.save(findExistMaterial));
     }

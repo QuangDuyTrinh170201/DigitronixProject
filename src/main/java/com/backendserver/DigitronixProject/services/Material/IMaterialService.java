@@ -1,6 +1,7 @@
 package com.backendserver.DigitronixProject.services.Material;
 
 import com.backendserver.DigitronixProject.dtos.MaterialDTO;
+import com.backendserver.DigitronixProject.dtos.UpdateMaterialDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
 import com.backendserver.DigitronixProject.models.Material;
 import com.backendserver.DigitronixProject.responses.MaterialResponse;
@@ -16,7 +17,7 @@ public interface IMaterialService {
 
     List<MaterialResponse> getAllMaterialWithoutPaging() throws DataNotFoundException;
 
-    MaterialResponse updateMaterial(Long id, MaterialDTO materialDTO) throws Exception;
+    MaterialResponse updateMaterial(Long id, UpdateMaterialDTO materialDTO) throws Exception;
 
     void deleteMaterial(Long id) throws DataNotFoundException;
 

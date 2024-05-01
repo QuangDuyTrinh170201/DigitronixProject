@@ -2,9 +2,11 @@ package com.backendserver.DigitronixProject.services.Salary;
 
 import com.backendserver.DigitronixProject.dtos.SalaryDTO;
 import com.backendserver.DigitronixProject.exceptions.DataNotFoundException;
+import com.backendserver.DigitronixProject.models.Order;
 import com.backendserver.DigitronixProject.models.ProductionDetail;
 import com.backendserver.DigitronixProject.models.Salary;
 import com.backendserver.DigitronixProject.models.User;
+import com.backendserver.DigitronixProject.repositories.OrderRepository;
 import com.backendserver.DigitronixProject.repositories.ProductionDetailRepository;
 import com.backendserver.DigitronixProject.repositories.SalaryRepository;
 import com.backendserver.DigitronixProject.repositories.UserRepository;
@@ -31,6 +33,7 @@ public class SalaryService implements ISalaryService{
     private final SalaryRepository salaryRepository;
     private final UserRepository userRepository;
     private final ProductionDetailRepository productionDetailRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public List<SalaryResponse> getAllSalary() throws Exception {
@@ -87,49 +90,50 @@ public class SalaryService implements ISalaryService{
         User findExistingUser = userRepository.findById(salaryDTO.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find this user in system!"));
         List<ProductionDetail> productionDetailList = productionDetailRepository.findProductionDetailByUserId(findExistingUser.getId());
-
-        // Tính toán phần (productionDetailList.size() - minKpi)
-        int productionMinusMinKpi = productionDetailList.size() - salaryDTO.getMinKpi();
-        if (productionMinusMinKpi <= 0) {
-            productionMinusMinKpi = 0;
-        }
-
-        // Tính toán tổng lương
-        double totalSalary = (salaryDTO.getSalaryPerDate() * salaryDTO.getWorkingDate())
-                + (salaryDTO.getSalaryPerDate() * 26 * productionMinusMinKpi / 100.0);
-
-        // Tính toán rateSa
-        float rateSa = (float) (productionMinusMinKpi / 100.0);
-
+        List<Order> orderList = orderRepository.findOrderByUserId(findExistingUser.getId());
         Salary salary = new Salary();
+        // Tính toán phần (productionDetailList.size() - minKpi)
+        double totalSalaryWithDoNotHaveKpi = (salaryDTO.getSalaryPerDate() * salaryDTO.getWorkingDate());
+        if(findExistingUser.getRole().getName().equals("worker")){
+            int productionMinusMinKpi = productionDetailList.size() - salaryDTO.getMinKpi();
+            if (productionMinusMinKpi <= 0) {
+                productionMinusMinKpi = 0;
+            }
+
+            // Tính toán tổng lương
+            double totalSalary = (salaryDTO.getSalaryPerDate() * salaryDTO.getWorkingDate())
+                    + (salaryDTO.getSalaryPerDate() * 26 * productionMinusMinKpi / 100.0);
+
+            // Tính toán rateSa
+            float rateSa = (float) (productionMinusMinKpi / 100.0);
+            salary.setRateSa(rateSa);
+            salary.setTotal(totalSalary);
+        }
+        else if(findExistingUser.getRole().getName().equals("sale")){
+            int productionMinusMinKpi = orderList.size() - salaryDTO.getMinKpi();
+            if (productionMinusMinKpi <= 0) {
+                productionMinusMinKpi = 0;
+            }
+
+            // Tính toán tổng lương
+            double totalSalary = (salaryDTO.getSalaryPerDate() * salaryDTO.getWorkingDate())
+                    + (salaryDTO.getSalaryPerDate() * 26 * productionMinusMinKpi / 100.0);
+
+            // Tính toán rateSa
+            float rateSa = (float) (productionMinusMinKpi / 100.0);
+            salary.setRateSa(rateSa);
+            salary.setTotal(totalSalary);
+        }
         salary.setSalaryPerDate(salaryDTO.getSalaryPerDate());
         salary.setWorkingDate(salaryDTO.getWorkingDate());
         salary.setMinKpi(salaryDTO.getMinKpi());
-        salary.setRateSa(rateSa);
-        salary.setTotal(totalSalary);
+        salary.setTotal(totalSalaryWithDoNotHaveKpi);
         salary.setUser(findExistingUser);
 
         salary = salaryRepository.save(salary);
         return SalaryResponse.fromSalary(salary);
     }
 
-//    @Override
-//    public SalaryResponse updateSalary(Long id, SalaryDTO salaryDTO) throws Exception {
-//        Salary findExistingSalary = salaryRepository.findById(id)
-//                .orElseThrow(() -> new DataNotFoundException("Cannot find this salary!"));
-//        User user = userRepository.findById(salaryDTO.getUserId())
-//                        .orElseThrow(()->new DataNotFoundException("Cannot find this user"));
-//
-//        List<ProductionDetail> productionDetailList = productionDetailRepository.findProductionDetailByUserId(user.getId());
-//
-//        findExistingSalary.setUser(user);
-//        findExistingSalary.setSalaryPerDate(salaryDTO.getSalaryPerDate());
-//        findExistingSalary.setWorkingDate(salaryDTO.getWorkingDate());
-//        findExistingSalary.setMinKpi(salaryDTO.getMinKpi());
-//        findExistingSalary.setRateSa(salaryDTO.getRateSa());
-//        findExistingSalary.setTotal(salaryDTO.getTotal());
-//        return SalaryResponse.fromSalary(salaryRepository.save(findExistingSalary));
-//    }
 
     @Override
     public SalaryResponse updateSalary(Long id, SalaryDTO salaryDTO) throws Exception {
