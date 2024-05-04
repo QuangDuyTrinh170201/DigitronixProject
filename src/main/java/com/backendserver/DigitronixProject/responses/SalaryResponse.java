@@ -30,12 +30,16 @@ public class SalaryResponse extends BaseResponse{
     @JsonProperty("rate_sa")
     private float rateSa;
 
+    @JsonProperty("user_name")
+    private String userName;
+
     private double total;
 
     public static SalaryResponse fromSalary(Salary salary) {
         SalaryResponse salaryResponse = SalaryResponse.builder()
                 .id(salary.getId())
                 .userId(salary.getUser().getId())
+                .userName(salary.getUser().getUsername())
                 .salaryPerDate(salary.getSalaryPerDate())
                 .workingDate(salary.getWorkingDate())
                 .minKpi(salary.getMinKpi())
