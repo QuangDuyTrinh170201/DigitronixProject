@@ -252,7 +252,7 @@ public class SalaryService implements ISalaryService{
                         + (salary.getSalaryPerDate() * 26 * orderMinusMinKpi / 100.0);
             } else {
                 // Handle other roles if needed
-                totalSalary = 0.0; // Default value if role is not worker or sale
+                totalSalary = (salary.getSalaryPerDate() * salary.getWorkingDate());
             }
 
             salary.setTotal(totalSalary);
