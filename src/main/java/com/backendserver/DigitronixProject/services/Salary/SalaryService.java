@@ -217,11 +217,48 @@ public class SalaryService implements ISalaryService{
         }
     }
 
+//    @Override
+//    public void timekeepingAll() throws Exception {
+//        List<Salary> findAllSalary = salaryRepository.findAll();
+//        for (Salary salary : findAllSalary){
+//            salary.setWorkingDate(salary.getWorkingDate() + 1);
+//        }
+//    }
+
     @Override
     public void timekeepingAll() throws Exception {
         List<Salary> findAllSalary = salaryRepository.findAll();
-        for (Salary salary : findAllSalary){
+        for (Salary salary : findAllSalary) {
+            // Tăng số ngày làm việc lên 1
             salary.setWorkingDate(salary.getWorkingDate() + 1);
+
+            // Tính lại tổng lương
+            double totalSalary;
+            if (salary.getUser().getRole().getName().equals("worker")) {
+                List<ProductionDetail> productionDetailList = productionDetailRepository.findProductionDetailByUserId(salary.getUser().getId());
+                int productionMinusMinKpi = productionDetailList.size() - salary.getMinKpi();
+                if (productionMinusMinKpi <= 0) {
+                    productionMinusMinKpi = 0;
+                }
+                totalSalary = (salary.getSalaryPerDate() * salary.getWorkingDate())
+                        + (salary.getSalaryPerDate() * 26 * productionMinusMinKpi / 100.0);
+            } else if (salary.getUser().getRole().getName().equals("sale")) {
+                List<Order> orderList = orderRepository.findOrderByUserId(salary.getUser().getId());
+                int orderMinusMinKpi = orderList.size() - salary.getMinKpi();
+                if (orderMinusMinKpi <= 0) {
+                    orderMinusMinKpi = 0;
+                }
+                totalSalary = (salary.getSalaryPerDate() * salary.getWorkingDate())
+                        + (salary.getSalaryPerDate() * 26 * orderMinusMinKpi / 100.0);
+            } else {
+                // Handle other roles if needed
+                totalSalary = 0.0; // Default value if role is not worker or sale
+            }
+
+            salary.setTotal(totalSalary);
+
+            // Lưu lại thay đổi
+            salaryRepository.save(salary);
         }
     }
 
