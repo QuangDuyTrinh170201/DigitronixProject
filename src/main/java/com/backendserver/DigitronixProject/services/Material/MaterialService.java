@@ -57,11 +57,8 @@ public class MaterialService implements IMaterialService {
     }
 
     @Override
-    public List<MaterialResponse> getAllMaterialWithoutPaging() throws DataNotFoundException {
+    public List<MaterialResponse> getAllMaterialWithoutPaging() {
         List<Material> listAllMaterial = materialRepository.findAll();
-        if(listAllMaterial.isEmpty()){
-            throw new DataNotFoundException("Empty material in database!");
-        }
         return listAllMaterial.stream().map(MaterialResponse::fromMaterial).toList();
     }
 

@@ -72,11 +72,8 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public List<ProductResponse> getAllProductNoPaging() throws DataNotFoundException {
+    public List<ProductResponse> getAllProductNoPaging() {
         List<Product> productList = productRepository.findAll();
-        if(productList.isEmpty()){
-            throw new DataNotFoundException("Cannot find any product in application");
-        }
         return productList.stream().map(ProductResponse::fromProduct).toList();
     }
 

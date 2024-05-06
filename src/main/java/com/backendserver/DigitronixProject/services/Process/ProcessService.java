@@ -22,9 +22,6 @@ public class ProcessService implements IProcessService {
     @Override
     public List<ProcessResponse> getAllProcess() throws Exception {
         List<Process> listAllProcess = processRepository.findAll();
-        if(listAllProcess.isEmpty()){
-            throw new DataNotFoundException("Empty material in database!");
-        }
         return listAllProcess.stream().map(ProcessResponse::fromProcess).toList();
     }
 
