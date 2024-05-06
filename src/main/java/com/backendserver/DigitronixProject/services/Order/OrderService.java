@@ -53,6 +53,58 @@ public class OrderService implements IOrderService {
 //        return OrderResponse.fromOrder(newOrder);
 //    }
 
+//    @Override
+//    public OrderResponse createOrder(OrderDTO orderDTO) throws Exception {
+//        // Kiểm tra và lấy thông tin người dùng và khách hàng từ cơ sở dữ liệu
+//        User user = userRepository.findById(orderDTO.getUserId())
+//                .orElseThrow(() -> new DataNotFoundException("Cannot find this user in application"));
+//        Customer customer = customerRepository.findById(orderDTO.getCustomerId())
+//                .orElseThrow(() -> new DataNotFoundException("Cannot find this customer in application!"));
+//
+//        // Tạo một đối tượng Order từ thông tin trong OrderDTO
+//        Order newOrder = new Order();
+//        newOrder.setCreatedDate(orderDTO.getCreatedDate());
+//        newOrder.setDeadline(orderDTO.getDeadline());
+//        newOrder.setPaymentMethod(orderDTO.getPaymentMethod());
+//        newOrder.setDeliveryMethod(orderDTO.getDeliveryMethod());
+//        newOrder.setTotalPrice(orderDTO.getTotalPrice());
+//        newOrder.setStatus("pending");
+//        newOrder.setUser(user);
+//        newOrder.setCustomer(customer);
+//
+//        // Lưu Order vào cơ sở dữ liệu
+//        newOrder = orderRepository.save(newOrder);
+//
+//        // Tạo danh sách OrderDetail từ thông tin trong OrderDTO
+//        List<OrderDetailDTO> orderDetailDTOList = orderDTO.getOrderDetailDTOList();
+//        List<OrderDetail> orderDetails = new ArrayList<>();
+//        for (OrderDetailDTO orderDetailDTO : orderDetailDTOList) {
+//            OrderDetail orderDetail = new OrderDetail();
+//            orderDetail.setOrder(newOrder);
+//
+//            // Lấy thông tin sản phẩm từ OrderDetailDTO
+//            Long productId = orderDetailDTO.getProductId();
+//            Long quantity = orderDetailDTO.getQuantity();
+//
+//            // Kiểm tra và lấy thông tin sản phẩm từ cơ sở dữ liệu
+//            Product product = productRepository.findById(productId)
+//                    .orElseThrow(() -> new DataNotFoundException("Product not found with id: " + productId));
+//
+//            // Đặt thông tin cho OrderDetail
+//            orderDetail.setProduct(product);
+//            orderDetail.setQuantity(quantity);
+//
+//            // Thêm OrderDetail vào danh sách
+//            orderDetails.add(orderDetail);
+//        }
+//
+//        // Lưu danh sách OrderDetail vào cơ sở dữ liệu
+//        orderDetailRepository.saveAll(orderDetails);
+//
+//        // Trả về response chứa thông tin của Order vừa được tạo
+//        return OrderResponse.fromOrder(newOrder);
+//    }
+
     @Override
     public OrderResponse createOrder(OrderDTO orderDTO) throws Exception {
         // Kiểm tra và lấy thông tin người dùng và khách hàng từ cơ sở dữ liệu
@@ -67,13 +119,8 @@ public class OrderService implements IOrderService {
         newOrder.setDeadline(orderDTO.getDeadline());
         newOrder.setPaymentMethod(orderDTO.getPaymentMethod());
         newOrder.setDeliveryMethod(orderDTO.getDeliveryMethod());
-        newOrder.setTotalPrice(orderDTO.getTotalPrice());
-        newOrder.setStatus("pending");
-        newOrder.setUser(user);
-        newOrder.setCustomer(customer);
 
-        // Lưu Order vào cơ sở dữ liệu
-        newOrder = orderRepository.save(newOrder);
+        double totalPrice = 0; // Tổng giá của tất cả sản phẩm trong đơn hàng
 
         // Tạo danh sách OrderDetail từ thông tin trong OrderDTO
         List<OrderDetailDTO> orderDetailDTOList = orderDTO.getOrderDetailDTOList();
@@ -90,6 +137,10 @@ public class OrderService implements IOrderService {
             Product product = productRepository.findById(productId)
                     .orElseThrow(() -> new DataNotFoundException("Product not found with id: " + productId));
 
+            // Tính giá sản phẩm
+            double productPrice = product.getPrice() * quantity;
+            totalPrice += productPrice;
+
             // Đặt thông tin cho OrderDetail
             orderDetail.setProduct(product);
             orderDetail.setQuantity(quantity);
@@ -97,6 +148,14 @@ public class OrderService implements IOrderService {
             // Thêm OrderDetail vào danh sách
             orderDetails.add(orderDetail);
         }
+
+        newOrder.setTotalPrice(totalPrice); // Cập nhật tổng giá của đơn hàng
+        newOrder.setStatus("pending");
+        newOrder.setUser(user);
+        newOrder.setCustomer(customer);
+
+        // Lưu Order vào cơ sở dữ liệu
+        newOrder = orderRepository.save(newOrder);
 
         // Lưu danh sách OrderDetail vào cơ sở dữ liệu
         orderDetailRepository.saveAll(orderDetails);
@@ -117,7 +176,7 @@ public class OrderService implements IOrderService {
         checkExisting.setDeadline(orderDTO.getDeadline());
         checkExisting.setPaymentMethod(orderDTO.getPaymentMethod());
         checkExisting.setDeliveryMethod(orderDTO.getDeliveryMethod());
-        checkExisting.setTotalPrice(orderDTO.getTotalPrice());
+
         if(Objects.equals(orderDTO.getStatus(), "confirmed")){
             List<OrderDetail> orderDetails = orderDetailRepository.findOrderDetailByOrderId(checkExisting.getId());
             for(OrderDetail orderDetail :orderDetails){
@@ -134,6 +193,18 @@ public class OrderService implements IOrderService {
                     product.setMissing(0);
                 }
             }
+            checkExisting.setTotalPrice(checkExisting.getTotalPrice());
+        }else{
+            double totalPrice = 0;
+            List<OrderDetail> orderDetails = orderDetailRepository.findOrderDetailByOrderId(checkExisting.getId());
+            for (OrderDetail orderDetail : orderDetails) {
+                Product product = productRepository.findById(orderDetail.getProduct().getId())
+                        .orElseThrow(() -> new DataNotFoundException("Cannot find this product"));
+                Long orderDetailQuantity = orderDetail.getQuantity();
+                double productPrice = product.getPrice() * orderDetailQuantity;
+                totalPrice += productPrice;
+            }
+            checkExisting.setTotalPrice(totalPrice);
         }
         checkExisting.setStatus(orderDTO.getStatus());
         checkExisting.setUser(checkExistUser);

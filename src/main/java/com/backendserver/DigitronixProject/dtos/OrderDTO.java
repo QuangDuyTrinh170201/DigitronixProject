@@ -33,7 +33,6 @@ public class OrderDTO {
     private String paymentMethod;
 
     @JsonProperty("total_price")
-    @NotBlank(message = "Total price is required")
     private Double totalPrice;
 
     @JsonProperty("status")
