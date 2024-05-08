@@ -34,12 +34,16 @@ public class ProcessDetailResponse extends BaseResponse{
     @JsonProperty("out_id")
     private Long outId;
 
+    @JsonProperty("process_name")
+    private String processName;
+
     public static ProcessDetailResponse fromProcessDetail(ProcessDetail processDetail){
         ProcessDetailResponse response = ProcessDetailResponse.builder()
                 .id(processDetail.getId())
                 .detailName(processDetail.getDetailName())
                 .intensity(processDetail.getIntensity())
                 .processId(processDetail.getProcess().getId())
+                .processName(processDetail.getProcess().getProcessName())
                 .isFinal(processDetail.getIsFinal())
                 .inMaterialId(processDetail.getMaterial().getId())
                 .materialName(processDetail.getMaterial().getName())
