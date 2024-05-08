@@ -148,6 +148,8 @@ public class ProductService implements IProductService {
                 existingProduct.setMissing(0);
                 existingProduct.setQuantity(0);
             }
+        }else{
+            existingProduct.setQuantity(productDTO.getQuantity());
         }
         productRepository.save(existingProduct);
         return ProductResponse.fromProduct(existingProduct);
