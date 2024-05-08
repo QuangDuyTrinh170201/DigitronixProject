@@ -132,6 +132,10 @@ public class ProductionDetailService implements IProductionDetailService{
         else if(productionDetailDTO.getStatus().equals("done")){
             if(findExistingProcessDetail.getIsFinal().equals(true)){
                 findExistingProduction.setStatus("done");
+                Order findOrder = orderRepository.findById(findExistingProduction.getOrder().getId())
+                        .orElseThrow(()->new DataNotFoundException("Cannot find this order"));
+                findOrder.setStatus("produced");
+                orderRepository.save(findOrder);
                 Product existingProduct = productRepository.findById(findExistingProcessDetail.getOutId())
                         .orElseThrow(()->new DataNotFoundException("Cannot find any product matching with this production detail!"));
                 int prodQuantity = existingProduct.getQuantity();

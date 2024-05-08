@@ -35,6 +35,8 @@ public class DeliveryService implements IDeliveryService{
     public DeliveryResponse createDelivery(DeliveryDTO deliveryDTO) throws Exception {
         Order order = orderRepository.findById(deliveryDTO.getOrderId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find order with this delivery"));
+        order.setStatus("on_delivery");
+        orderRepository.save(order);
         Delivery delivery = new Delivery();
         delivery.setDeliveryDate(deliveryDTO.getDeliveryDate());
         delivery.setOrder(order);
@@ -49,8 +51,14 @@ public class DeliveryService implements IDeliveryService{
                 .orElseThrow(()->new DataNotFoundException("Cannot find this delivery"));
         Order order = orderRepository.findById(deliveryDTO.getOrderId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find order with this delivery"));
+        if(deliveryDTO.getStatus().equals(true)){
+            order.setStatus("delivered");
+            orderRepository.save(order);
+        }
+        else{
+            delivery.setOrder(order);
+        }
         delivery.setDeliveryDate(deliveryDTO.getDeliveryDate());
-        delivery.setOrder(order);
         delivery.setStatus(deliveryDTO.getStatus());
         return DeliveryResponse.fromDelivery(deliveryRepository.save(delivery));
     }
