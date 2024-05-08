@@ -67,6 +67,12 @@ public class DeliveryService implements IDeliveryService{
     public void deleteDelivery(Long id) throws Exception {
         Delivery delivery = deliveryRepository.findById(id)
                 .orElseThrow(()->new DataNotFoundException("Cannot find this delivery!"));
+        Order existingOrder = orderRepository.findById(delivery.getOrder().getId())
+                        .orElseThrow(()->new DataNotFoundException("Cannot find this order!"));
+        if(delivery.getStatus().equals(false)){
+            existingOrder.setStatus("produced");
+            orderRepository.save(existingOrder);
+        }
         deliveryRepository.delete(delivery);
     }
 }
